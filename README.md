@@ -11,6 +11,16 @@ Os seguintes dipositivos estão listados:
 - **Semáforos:** que recebem sinais do sistema controlador via interscity;
 - **Câmeras:** identifica a quantidade e os tipos de carros em uma determinada rua.
 
+## Requisitos
+
+Plataforma InterSCity em execuçao: https://gitlab.com/maioni/interscity-platform
+
+Comom executar o projeto InterSCity - Branch Standalone-version: https://gitlab.com/maioni/interscity-platform/-/blob/Standalone-version/deploy/README_STANDALONE.md?ref_type=heads
+
+A plataforma InterSCity é fornecer serviços e APIs de alto nível para apoiar o desenvolvimento de novos serviços para as cidades, reunindo tecnologias facilitadoras essenciais, como IoT, Big Data e Cloud Computer. A plataforma adota uma arquitetura de microsserviços projetada para suportar adequadamente a integração de uma grande quantidade de dispositivos e dados e fornecer serviços de qualidade em escala urbana.
+
+Mais sobre o projeto InterSCity: https://gitlab.com/interscity/interscity-platform/docs
+
 ## Como Rodar?
 <!-- Yarn e Nodejs -->
 Para rodar o projeto é necessário ter o intérprete JavaScript chamado [Nodejs](https://nodejs.org/en/) e um gerenciador de pacotes: o [Yarn](https://yarnpkg.com/) ou o [Npm](https://www.npmjs.com/) instalados. Após isso, basta rodar os seguintes comandos:
@@ -62,9 +72,11 @@ Caso queira alterar o estado dos sensores, basta enviar uma requisição http pa
 }
 ```
 
-Commands:
+#### Coleção do Postman disponível aqui: [AutoFlow.postman_collection.json](./AutoFlow.postman_collection.json)
 
-Listar sensores e identificar o uuid destes
+### Requisições CLI via cURL:
+
+##  Listar sensores e identificar o uuid destes
 
 ```bash
 curl -X GET 'http://10.10.10.104:8000/catalog/resources' -H 'Accept: application/json' | json_pp
@@ -166,7 +178,7 @@ Resposta:
 }
 ```
 
-- Para listar apenas os uuids de cadas sensor:
+## Para listar apenas os uuids de cadas sensor:
 
 ```bash
 curl -X GET 'http://10.10.10.104:8000/catalog/resources' -H 'Accept: application/json' | json_pp | grep 'descripti
@@ -189,7 +201,7 @@ Resposta:
          "uuid" : "c15ae710-b9ff-4c03-b349-da12cf6243a4"
 ```
 
-Setar semaphore para o estado green
+##  Setar semaphore para o estado green
 
 ```bash
 curl -X GET 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "green"}}]}' | json_pp
@@ -218,7 +230,7 @@ Resposta:
 }
 ```
 
-Setar semaphore blue para o estado yellow
+## Setar semaphore blue para o estado yellow
 
 ```bash
 curl -X GET 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "yellow"}}]}' | json_pp
@@ -246,7 +258,7 @@ Resposta:
 }
 ```
 
-Setar semaphore blue para o estado red
+## Setar semaphore blue para o estado red
 
 ```bash
 curl -X GET 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "red"}}]}' | json_pp

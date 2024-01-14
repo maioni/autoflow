@@ -1,0 +1,603 @@
+{
+	"info": {
+		"_postman_id": "39e4680c-b71c-4206-b231-50681a02d9d3",
+		"name": "AutoFlow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6341809"
+	},
+	"item": [
+		{
+			"name": "Resources UUID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"ffbadd7e-f27a-4a01-a666-77c69887db3c\",\n      \"capabilities\": {\n        \"semaphore\": \"red\"\n      }\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://10.10.10.104:8000/catalog/resources",
+					"protocol": "http",
+					"host": [
+						"10",
+						"10",
+						"10",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"resources"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Resources UUID",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"ffbadd7e-f27a-4a01-a666-77c69887db3c\",\n      \"capabilities\": {\n        \"semaphore\": \"red\"\n      }\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://10.10.10.104:8000/catalog/resources",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"10",
+								"104"
+							],
+							"port": "8000",
+							"path": [
+								"catalog",
+								"resources"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"f6bc11b6dd273eab94407a23a4130e0f\""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "84aaeea4-9f26-4c5f-ad8e-830fd9af87bd"
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.019732"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Kong-Upstream-Latency",
+							"value": "21"
+						},
+						{
+							"key": "X-Kong-Proxy-Latency",
+							"value": "13"
+						},
+						{
+							"key": "Via",
+							"value": "kong/0.11.0"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"resources\": [\n        {\n            \"id\": 4,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:45.528Z\",\n            \"updated_at\": \"2024-01-14T21:08:45.528Z\",\n            \"lat\": -23.5160485205594,\n            \"lon\": -47.4658885933725,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-blue\",\n            \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        },\n        {\n            \"id\": 3,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:45.306Z\",\n            \"updated_at\": \"2024-01-14T21:08:45.306Z\",\n            \"lat\": -23.5157791204919,\n            \"lon\": -47.4658783919647,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-green\",\n            \"uuid\": \"3467abf2-cc58-4f96-b4c7-8b1b149f7815\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        },\n        {\n            \"id\": 2,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:45.138Z\",\n            \"updated_at\": \"2024-01-14T21:08:45.138Z\",\n            \"lat\": -23.5156575406317,\n            \"lon\": -47.4655711931671,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-cyan\",\n            \"uuid\": \"eaa204d1-4032-4da8-9689-da3ec5aa4712\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        },\n        {\n            \"id\": 1,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:44.935Z\",\n            \"updated_at\": \"2024-01-14T21:08:44.935Z\",\n            \"lat\": -23.5158948777673,\n            \"lon\": -47.4656080735414,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-purple\",\n            \"uuid\": \"c15ae710-b9ff-4c03-b349-da12cf6243a4\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Sensors UUID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"ffbadd7e-f27a-4a01-a666-77c69887db3c\",\n      \"capabilities\": {\n        \"semaphore\": \"red\"\n      }\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://10.10.10.104:8000/catalog/resources/sensors",
+					"protocol": "http",
+					"host": [
+						"10",
+						"10",
+						"10",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"catalog",
+						"resources",
+						"sensors"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Resources UUID",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"ffbadd7e-f27a-4a01-a666-77c69887db3c\",\n      \"capabilities\": {\n        \"semaphore\": \"red\"\n      }\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://10.10.10.104:8000/catalog/resources/sensors",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"10",
+								"104"
+							],
+							"port": "8000",
+							"path": [
+								"catalog",
+								"resources",
+								"sensors"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"f6bc11b6dd273eab94407a23a4130e0f\""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "4ddba6de-bcdf-4da0-ad84-d679037025dd"
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.012310"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Kong-Upstream-Latency",
+							"value": "13"
+						},
+						{
+							"key": "X-Kong-Proxy-Latency",
+							"value": "0"
+						},
+						{
+							"key": "Via",
+							"value": "kong/0.11.0"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"resources\": [\n        {\n            \"id\": 4,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:45.528Z\",\n            \"updated_at\": \"2024-01-14T21:08:45.528Z\",\n            \"lat\": -23.5160485205594,\n            \"lon\": -47.4658885933725,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-blue\",\n            \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        },\n        {\n            \"id\": 3,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:45.306Z\",\n            \"updated_at\": \"2024-01-14T21:08:45.306Z\",\n            \"lat\": -23.5157791204919,\n            \"lon\": -47.4658783919647,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-green\",\n            \"uuid\": \"3467abf2-cc58-4f96-b4c7-8b1b149f7815\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        },\n        {\n            \"id\": 2,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:45.138Z\",\n            \"updated_at\": \"2024-01-14T21:08:45.138Z\",\n            \"lat\": -23.5156575406317,\n            \"lon\": -47.4655711931671,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-cyan\",\n            \"uuid\": \"eaa204d1-4032-4da8-9689-da3ec5aa4712\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        },\n        {\n            \"id\": 1,\n            \"uri\": null,\n            \"created_at\": \"2024-01-14T21:08:44.935Z\",\n            \"updated_at\": \"2024-01-14T21:08:44.935Z\",\n            \"lat\": -23.5158948777673,\n            \"lon\": -47.4656080735414,\n            \"status\": \"active\",\n            \"collect_interval\": null,\n            \"description\": \"semaphore-purple\",\n            \"uuid\": \"c15ae710-b9ff-4c03-b349-da12cf6243a4\",\n            \"city\": null,\n            \"neighborhood\": null,\n            \"state\": null,\n            \"postal_code\": null,\n            \"country\": null,\n            \"capabilities\": [\n                \"semaphore-camera\",\n                \"semaphore\"\n            ]\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Semaphore SET RED",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n      \"capabilities\": {\n        \"semaphore\": \"red\"\n      }\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://10.10.10.104:8000/actuator/commands",
+					"protocol": "http",
+					"host": [
+						"10",
+						"10",
+						"10",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"actuator",
+						"commands"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Semaphore SET RED",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n      \"capabilities\": {\n        \"semaphore\": \"red\"\n      }\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://10.10.10.104:8000/actuator/commands",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"10",
+								"104"
+							],
+							"port": "8000",
+							"path": [
+								"actuator",
+								"commands"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"050bcd747971ec341823b5a07a440a3e\""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "fb578c29-1b59-4557-91cb-1dd95d6f02da"
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.017322"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Kong-Upstream-Latency",
+							"value": "19"
+						},
+						{
+							"key": "X-Kong-Proxy-Latency",
+							"value": "0"
+						},
+						{
+							"key": "Via",
+							"value": "kong/0.11.0"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": [\n        {\n            \"_id\": {\n                \"$oid\": \"65a457fec47a7b0001cce08b\"\n            },\n            \"capability\": \"semaphore\",\n            \"created_at\": \"2024-01-14T21:54:06.916Z\",\n            \"platform_resource_id\": {\n                \"$oid\": \"65a44d5dc47a7b0001cce088\"\n            },\n            \"status\": \"pending\",\n            \"updated_at\": \"2024-01-14T21:54:06.916Z\",\n            \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n            \"value\": \"red\"\n        }\n    ],\n    \"failure\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "Semaphore SET YELLOW",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n      \"capabilities\": {\n        \"semaphore\": \"yellow\"\n      }\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://10.10.10.104:8000/actuator/commands",
+					"protocol": "http",
+					"host": [
+						"10",
+						"10",
+						"10",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"actuator",
+						"commands"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Semaphore SET YELLOW",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n      \"capabilities\": {\n        \"semaphore\": \"yellow\"\n      }\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://10.10.10.104:8000/actuator/commands",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"10",
+								"104"
+							],
+							"port": "8000",
+							"path": [
+								"actuator",
+								"commands"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"171a4e69510f4495827f57a66fef7f3d\""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "f6afbd47-d7e5-4295-a149-e1a781ee7aa5"
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.030772"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Kong-Upstream-Latency",
+							"value": "31"
+						},
+						{
+							"key": "X-Kong-Proxy-Latency",
+							"value": "0"
+						},
+						{
+							"key": "Via",
+							"value": "kong/0.11.0"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": [\n        {\n            \"_id\": {\n                \"$oid\": \"65a457c8c47a7b0001cce08a\"\n            },\n            \"capability\": \"semaphore\",\n            \"created_at\": \"2024-01-14T21:53:12.657Z\",\n            \"platform_resource_id\": {\n                \"$oid\": \"65a44d5dc47a7b0001cce088\"\n            },\n            \"status\": \"pending\",\n            \"updated_at\": \"2024-01-14T21:53:12.657Z\",\n            \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n            \"value\": \"yellow\"\n        }\n    ],\n    \"failure\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "Semaphore SET GREEN",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n      \"capabilities\": {\n        \"semaphore\": \"green\"\n      }\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://10.10.10.104:8000/actuator/commands",
+					"protocol": "http",
+					"host": [
+						"10",
+						"10",
+						"10",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"actuator",
+						"commands"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Semaphore SET GREEN",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n    {\n      \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n      \"capabilities\": {\n        \"semaphore\": \"green\"\n      }\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://10.10.10.104:8000/actuator/commands",
+							"protocol": "http",
+							"host": [
+								"10",
+								"10",
+								"10",
+								"104"
+							],
+							"port": "8000",
+							"path": [
+								"actuator",
+								"commands"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a58080fad70bc787d79b561f3df79e30\""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "c09124ea-da68-4533-8026-f6f238951540"
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.039226"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Kong-Upstream-Latency",
+							"value": "41"
+						},
+						{
+							"key": "X-Kong-Proxy-Latency",
+							"value": "0"
+						},
+						{
+							"key": "Via",
+							"value": "kong/0.11.0"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": [\n        {\n            \"_id\": {\n                \"$oid\": \"65a45760c47a7b0001cce089\"\n            },\n            \"capability\": \"semaphore\",\n            \"created_at\": \"2024-01-14T21:51:28.375Z\",\n            \"platform_resource_id\": {\n                \"$oid\": \"65a44d5dc47a7b0001cce088\"\n            },\n            \"status\": \"pending\",\n            \"updated_at\": \"2024-01-14T21:51:28.375Z\",\n            \"uuid\": \"8c283a3d-ea1f-4b55-8f18-0b34b38431eb\",\n            \"value\": \"green\"\n        }\n    ],\n    \"failure\": []\n}"
+				}
+			]
+		}
+	]
+}
