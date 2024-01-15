@@ -230,6 +230,10 @@ Resposta:
 }
 ```
 
+Saída:
+
+ ![Semaphore Blue at Green Status](preview_green.png)
+
 ## Setar semaphore blue para o estado yellow
 
 ```bash
@@ -257,6 +261,10 @@ Resposta:
     "failure": []
 }
 ```
+
+Saída:
+
+ ![Semaphore Blue at Green Status](preview_yellow.png)
 
 ## Setar semaphore blue para o estado red
 
@@ -286,3 +294,7 @@ Resposta:
     "failure": []
 }
 ```
+
+Saída:
+
+ ![Semaphore Blue at Green Status](preview_red.png)
