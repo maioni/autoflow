@@ -25,11 +25,21 @@ Mais sobre o projeto InterSCity: https://gitlab.com/interscity/interscity-platfo
 <!-- Yarn e Nodejs -->
 Para rodar o projeto é necessário ter o intérprete JavaScript chamado [Nodejs](https://nodejs.org/en/) e um gerenciador de pacotes: o [Yarn](https://yarnpkg.com/) ou o [Npm](https://www.npmjs.com/) instalados. 
 
-#### Cleanup - para uma instalação  limpa e correta do nvm e nodejs:
+#### Cleanup - para uma instalação limpa e correta do nvm e nodejs: 
+
+Execute o script [cleanup.sh](./cleanup.sh)
+
+Ou se desejar executar o script de forma manual:
 
 Remover nodejs
 ```bash
 sudo apt autoremove nodejs
+```
+
+Remover o yarn
+```bash
+sudo apt remove cmdtest
+sudo apt remove yarn
 ```
 
 Remover node do nvm
@@ -92,6 +102,8 @@ node --version
 nvm install-latest-npm
 npm list
 npm outdated
+# atualizar o yarn
+npm install -g yarn
 # Atualizar pacotes
 npm update -g
 ```

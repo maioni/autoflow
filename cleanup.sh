@@ -1,4 +1,7 @@
 echo "CLEAN UP STARTS ..."
+echo "REMOVE YARN FROM FROM SYSTEM ..."
+sudo apt remove cmdtest
+sudo apt remove yarn
 echo "REMOVING NODEJS FROM SYSTEM ..."
 sudo apt autoremove nodejs
 echo "REMOVING NODEJS FROM NVM ..."
