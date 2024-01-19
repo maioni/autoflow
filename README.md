@@ -23,29 +23,124 @@ Mais sobre o projeto InterSCity: https://gitlab.com/interscity/interscity-platfo
 
 ## Como Rodar?
 <!-- Yarn e Nodejs -->
-Para rodar o projeto é necessário ter o intérprete JavaScript chamado [Nodejs](https://nodejs.org/en/) e um gerenciador de pacotes: o [Yarn](https://yarnpkg.com/) ou o [Npm](https://www.npmjs.com/) instalados. Após isso, basta rodar os seguintes comandos:
+Para rodar o projeto é necessário ter o intérprete JavaScript chamado [Nodejs](https://nodejs.org/en/) e um gerenciador de pacotes: o [Yarn](https://yarnpkg.com/) ou o [Npm](https://www.npmjs.com/) instalados. 
+
+#### Cleanup - para uma instalação  limpa e correta do nvm e nodejs:
+
+Remover nodejs
+```bash
+sudo apt autoremove nodejs
+```
+
+Remover node do nvm
+```bash
+# Remoção automatica
+nvm uninstall * 
+# OU remoção via script
+for i in {1..30}; do echo $i; nvm uninstall  $i.*; done
+# Remoção manual
+sudo rm -rf ~/.nvm/versions/node/*
+nvm cache clear
+```
+
+Remover nvm
+```bash
+rm -rf ~/.nvm
+rm -rf ~/.npm
+rm -rf ~/.bower
+```
+
+### Requisitos [install_requirements.sh](./install_requirements.sh):
+
+#### Instalar nodejs via script
+
+Permissão de execução do script .sh:
+
+```shell
+$ chmod +x install_requirements.sh
+$ ./install_requirements.sh
+```
+
+#### Instalar nodejs de forma manual
+
+Ou se desejar executar o script de forma manual:
+
+```bash
+# Instalar o curl
+sudo apt install curl
+# Instalar o nvm via curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+# OU
+# Instalar o nvm via wget
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+source ~/.bashrc
+nvm ls
+nvm --version
+# Atualizar o nvm
+cd ~/.nvm/
+git fetch --tags origin
+git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)` && \. "$NVM_DIR/nvm.sh"
+nvm ls-remote
+nvm --version
+# Instalar última versão do nodejs no  nvm
+nvm ls-remote
+nvm install node
+nvm use node
+node --version
+# Atualizar o npm
+nvm install-latest-npm
+npm list
+npm outdated
+# Atualizar pacotes
+npm update -g
+```
+
+#### Para atualizar o nodejs no nvm
+
+```bash
+nvm install lts
+nvm use lts
+node --version
+```
+
+Após a instalação, reinicie o sistema operacional.
+
+### Após isso, basta rodar os seguintes comandos:
+
+#### Instalar pacotes necessários
 
 ```bash
 # Instalar as dependências
-npm  install
-# ou
 yarn install
+# ou
+npm  install
 ````
+
+#### Instalar recursos no InterSCity
 
 ```bash
 # Criar uma única vez os sensores na interscity [interscity deve estar ativo]
 # após criado, rodar este comando novamente, será exibido erro, pois a capabilities já estão criadas
-npm run setup:simulator
-# ou
 yarn setup:simulator
+# ou
+npm run setup:simulator
 ````
+
+Código 201 informa o retorno de sucesso.
+
+Nota: Necessita do InterSCity em execução, além disso, não é necessário ser executado novamente após configurado no InterSCity
+
+#### Inciar aplicação Autoflow
 
 ```bash
 # Rodar os sensores
-npm run start:dev
-# ou
 yarn start:dev
+# ou
+npm run start:dev
 ```
+
+## Entendendo a aplicação - semáforo x fluxo de carros:
 
 Após isso, os sensores estarão rodando e enviando dados para a interscity. Os sensores aumentaram a quantidade de carros conforme o tempo baseado no seu fator, o fator indica o quanto o sensor aumenta a quantidade de carros.
 
@@ -56,6 +151,8 @@ Após isso, os sensores estarão rodando e enviando dados para a interscity. Os 
 
 
 Também é possível receber os comandos enviados pela interscity. 
+
+## Status dos semáforos
 
 Caso queira alterar o estado dos sensores, basta enviar uma requisição http para o endereço `http://10.10.10.104:8000/actuator/commands` com o seguinte corpo:
 
@@ -71,6 +168,8 @@ Caso queira alterar o estado dos sensores, basta enviar uma requisição http pa
   ]
 }
 ```
+
+Aplicação deve retornar um json informando o sucesso do mesmo.
 
 #### Coleção do Postman disponível aqui: [AutoFlow.postman_collection.json](./AutoFlow.postman_collection.json)
 
@@ -181,13 +280,11 @@ Resposta:
 ## Para listar apenas os uuids de cadas sensor:
 
 ```bash
-curl -X GET 'http://10.10.10.104:8000/catalog/resources' -H 'Accept: application/json' | json_pp | grep 'descripti
-on\|uuid'
+curl -X GET 'http://10.10.10.104:8000/catalog/resources' -H 'Accept: application/json' | json_pp | grep 'description\|uuid'
 ```
 OU 
 ```bash
-curl -X GET 'http://10.10.10.104:8000/catalog/resources/sensors' -H 'Accept: application/json' | json_pp | grep 'descripti
-on\|uuid'
+curl -X GET 'http://10.10.10.104:8000/catalog/resources/sensors' -H 'Accept: application/json' | json_pp | grep 'description\|uuid'
 ```
 Resposta:
 ```json
@@ -204,7 +301,7 @@ Resposta:
 ##  Setar semaphore para o estado green
 
 ```bash
-curl -X GET 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "green"}}]}' | json_pp
+curl -X POST 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "green"}}]}' | json_pp
 ```
 
 Resposta:
@@ -237,7 +334,7 @@ Saída:
 ## Setar semaphore blue para o estado yellow
 
 ```bash
-curl -X GET 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "yellow"}}]}' | json_pp
+curl -X POST 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "yellow"}}]}' | json_pp
 ```
 Resposta:
 ```json
@@ -269,7 +366,7 @@ Saída:
 ## Setar semaphore blue para o estado red
 
 ```bash
-curl -X GET 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "red"}}]}' | json_pp
+curl -X POST 'http://10.10.10.104:8000/actuator/commands' -H 'Content-Type: application/json' -d '{"data": [{"uuid": "8c283a3d-ea1f-4b55-8f18-0b34b38431eb", "capabilities": {"semaphore": "red"}}]}' | json_pp
 ```
 
 Resposta:
