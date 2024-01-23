@@ -21,5 +21,7 @@ node --version
 nvm install-latest-npm
 npm list
 npm outdated
+# Instalar o yarn
+nom install -g yarn 
 # Atualizar pacotes
 npm update -g
