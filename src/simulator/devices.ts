@@ -35,8 +35,6 @@ export async function setupDevices() {
 }
 
 let index = 0;
-let green = false;
-let yellow = true;
 
 function updateSemaphoreStatus() {
   

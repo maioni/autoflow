@@ -152,6 +152,12 @@ yarn start:dev
 npm run start:dev
 ```
 
+#### nota: caso a porta esteja em uso:
+```bash
+sudo lsof -i :8000
+kill -9 <pid>
+```
+
 ## Entendendo a aplicação - semáforo x fluxo de carros:
 
 Após isso, os sensores estarão rodando e enviando dados para a interscity. Os sensores aumentaram a quantidade de carros conforme o tempo baseado no seu fator, o fator indica o quanto o sensor aumenta a quantidade de carros.
