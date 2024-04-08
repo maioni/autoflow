@@ -28,7 +28,46 @@ export async function setupDevices() {
     for (const semaphore of semaphores) {
       semaphore.carCount += Math.floor(Math.random() * semaphore.fator) + 1;
     }
-  }, 6000);
+  }, 5000);
+
+  updateSemaphoreStatus(); // Start the process
+
+}
+
+let index = 0;
+let green = false;
+let yellow = true;
+
+function updateSemaphoreStatus() {
+  
+  
+  if (index >= semaphores.length) {
+    index = 0; // Reset the index if it's out of bounds
+  }
+
+  console.log("\nindex " + index + " para " + (semaphores.length - 1));
+
+  // Setar semaforo amarelo
+  semaphores[index].colorStatus = ColorStatus.YELLOW;
+
+  // Setar semaforo amarelo
+  if (index + 1 < semaphores.length) {
+    semaphores[index + 1].colorStatus = ColorStatus.GREEN;
+  } else {
+    semaphores[0].colorStatus = ColorStatus.GREEN;
+  }
+
+  // Setar semaforo vermelho
+  if (index - 1 >= 0) {
+    semaphores[index - 1].colorStatus = ColorStatus.RED;
+  } else {
+    semaphores[semaphores.length - 1].colorStatus = ColorStatus.RED;
+  } 
+
+  // Proximo semaforo
+  index++;
+
+  setTimeout(updateSemaphoreStatus, 10000); // Call this function again after 10 seconds
 }
 
 async function fetchSemaphores() {
