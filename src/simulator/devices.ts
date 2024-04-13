@@ -275,4 +275,4 @@ function updateSemaphoreState() {
    }, semaphore.emergency ? emergencyGreenTime : normalGreenTime); // Change green delay based on emergency mode (10s ou 15s)
   }, totalCycleTime); // Change green delay based on emergency mode (30s ou 20s)
 
-}
+}``
