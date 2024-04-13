@@ -1,3 +1,5 @@
+
+
 const semaphores = [
   {
     description: "semaphore-purple",
@@ -27,7 +29,50 @@ const semaphores = [
     lat: "-23.51604852055936",
     lon: "-47.465888593372455",
   },
+  {
+    description: "semaphore-red",
+    capabilities: ["semaphore", "semaphore-camera"],
+    status: "active",
+    lat: "-23.51589487776733",
+    lon: "-47.465608073541446",
+  },
+  {
+    description: "semaphore-yellow",
+    capabilities: ["semaphore", "semaphore-camera"],
+    status: "active",
+    lat: "-23.515657540631693",
+    lon: "-47.4655711931671",
+  },
+  {
+    description: "semaphore-orange",
+    capabilities: ["semaphore", "semaphore-camera"],
+    status: "active",
+    lat: "-23.51589487776733",
+    lon: "-47.465608073541446",
+  },
+  {
+    description: "semaphore-pink",
+    capabilities: ["semaphore", "semaphore-camera"],
+    status: "active",
+    lat: "-23.515657540631693",
+    lon: "-47.4655711931671",
+  },
+  {
+    description: "semaphore-gray",
+    capabilities: ["semaphore", "semaphore-camera"],
+    status: "active",
+    lat: "-23.51577912049188",
+    lon: "-47.46587839196468",
+  },
+  {
+    description: "semaphore-white",
+    capabilities: ["semaphore", "semaphore-camera"],
+    status: "active",
+    lat: "-23.51604852055936",
+    lon: "-47.465888593372455",
+  },
 ];
+
 
 async function main() {
   const cap1 = await fetch("http://10.10.10.104:8000/catalog/capabilities", {
@@ -93,5 +138,6 @@ async function main() {
     console.log(subscription.status);
   }
 }
+
 
 main();

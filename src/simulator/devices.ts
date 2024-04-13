@@ -34,7 +34,7 @@ export async function setupDevices() {
     );
   }
 
-  console.log("\n");
+  console.log("");
 
   // Inicializa os semáforos
   setInterval(() => {
@@ -43,11 +43,17 @@ export async function setupDevices() {
     }
   }, carTime);
 
-  // Mostra os tempos
-  console.log(`Red Time: ${redTime}ms`);
-  console.log(`Yellow Time: ${yellowTime}ms`);
-  console.log(`Green Time: ${greenTime}ms`);
-  console.log("\n");
+  // Mostra os tempos em segundos
+  console.log(`Red Time: ${redTime / 1000}s`);
+  console.log(`Yellow Time: ${yellowTime / 1000}s`);
+  console.log(`Green Time: ${greenTime / 1000}s`);
+  console.log("");
+
+
+  // Exibe o estado de emergency de cada semáforo
+  const semaphoreStatus = semaphores.map((semaphore) => `${semaphore.description.replace("-", " ").replace("semaphore", "")}: ${semaphore.emergency ? "ON" : "OFF"}`);
+  console.log(semaphoreStatus.join(" | "));
+
 
   // Atualiza o status dos semáforos
   updateSemaphoreStatus(); // Altera o tempo de cada cor do semáforo
