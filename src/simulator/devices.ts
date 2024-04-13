@@ -13,8 +13,8 @@ let refreshDisplay = 100;
 
 // Tempo de chegada de carros
 let carTime = 5000;
-let carCountEmergencyTrigger = 20;
-let carCountNoEmergencyTrigger = 10;
+let carCountEmergencyTrigger = 50;
+let carCountNoEmergencyTrigger = 30;
 // Tempo de saida de carros
 let greenCarTime = 3000;
 let yellowCarTime = 5000;
