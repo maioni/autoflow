@@ -5,126 +5,49 @@ import { ColorStatus, Semaphore } from "../classes/semaphore";
 import { Colors, getColor } from "./colors";
 import express, { Request, Response } from "express";
 
+// Lista de semáforos
 const semaphores: Semaphore[] = [];
+// Tempo auxiliar
 let timeAux = new Date();
-
-// Refresh da tela
-let refreshDisplay = 100;
-
+// Tempo de refresh
+let refreshDisplay = 1000 * 0.1;
 // Tempo de chegada de carros
-let carTime = 5000;
+let carTime = 1000 * 5;
 let carCountEmergencyTrigger = 50;
 let carCountNoEmergencyTrigger = 30;
 // Tempo de saida de carros
-let greenCarTime = 3000;
-let yellowCarTime = 5000;
+let greenCarTime = 1000 * 3;
+let yellowCarTime = 1000 * 5;
 let carCountReductionGreenTime = 10;
 let carCountReductionYellowTime = 5;
-
 // Tempo de cada cor do semáforo
-let normalRedTime = 5000;
-let normalYellowTime = 10000;
-let normalGreenTime = 15000;
-
+let normalRedTime = 1000 * 5;
+let normalYellowTime = 1000 * 10;
+let normalGreenTime = 1000 * 15;
 // Tempo total de ciclo
 let totalCycleTime = normalRedTime + normalYellowTime + normalGreenTime;
-
 // Tempo de diferenca de emergencia
-let diffEmergencyTime = 5000;
-
+let diffEmergencyTime = 1000 * 5;
 // Tempo emergencia de cada cor do semáforo
 let emergencyRedTime = normalRedTime;
 let emergencyYellowTime = normalYellowTime - diffEmergencyTime;
 let emergencyGreenTime = normalGreenTime + diffEmergencyTime;
 
-// // Tempo em que a emergência foi ativada em um dos semaforos
-// let eventEmergencyTime = 120000;
-
-// Inicializa os semáforos
+// Configurar semáforos
 export async function setupDevices() {
-
   // Busca os semáforos
   await fetchSemaphores();
 
-  // Mostra os semáforos
-  for (const semaphore of semaphores) {
-    console.log(
-      `${semaphore.uuid}: ${getColor(semaphore.description.split("-")[1] as any)}[•]${
-        Colors.END
-      } ${semaphore.description.replace("-", " ")}: ${semaphore.fator}${
-        Colors.END
-      } fator`
-    );
-  }
-  console.log("");
+  // exibir semaforos
+  await showSemaphores();
 
   // Inicializa os semáforos, e incrementa os carros no semáforo a cada 5 segundos
-  setInterval(() => {
-    for (const semaphore of semaphores) {
-      semaphore.carCount += Math.floor(Math.random() * semaphore.fator) + 1;
-    }
-  }, carTime);
+  await initializeSemaphores();
 
-  // Mostra os tempos em segundos
-  console.log("Tempos:");
-  console.log(`Red Time: ${normalRedTime / 1000}s | Emergency Red Time: ${emergencyRedTime / 1000}s`);
-  console.log(`Yellow Time: ${normalYellowTime / 1000}s | Emergency Yellow Time: ${emergencyYellowTime / 1000}s`);
-  console.log(`Green Time: ${normalGreenTime / 1000}s | Emergency Green Time: ${emergencyGreenTime / 1000}s`);
-  console.log("");
+  //mostrar dados do dashboard:
+  await dashboard();
 
-  // // Listar os UUIDs e descrições dos semáforos
-  // console.log("UUIDs e Descrições dos Semáforos:");
-  // for (const semaphore of semaphores) {
-  //   console.log(`${semaphore.uuid}: ${semaphore.description}`);
-  // }
-  // console.log("");
-
-  // Exibe o estado de emergency de cada semáforo
-  console.log("Semáforos:");
-  updateSemaphoreState(); // Altera o estado de cada cor do semáforo
-
-}
-
-
-// Atualiza o status dos semáforos
-function updateSemaphoreStatus() {
-  setInterval(() => {
-    let currentIndex = 0;
-    const semaphore = semaphores[currentIndex];
-
-    setTimeout(() => {
-      semaphore.colorStatus = ColorStatus.GREEN; // Set semaphore to green
-
-      setTimeout(() => {
-        semaphore.colorStatus = ColorStatus.YELLOW; // Set semaphore to yellow
-
-        setTimeout(() => {
-          semaphore.colorStatus = ColorStatus.RED; // Set semaphore to red
-          currentIndex = (currentIndex + 1) % semaphores.length; // Change to next semaphore
-          }, semaphore.emergency ? emergencyRedTime : normalRedTime); // Change red delay based on emergency mode
-      
-      }, semaphore.emergency ? emergencyYellowTime : normalYellowTime); // Change yellow delay to 3000ms
-    
-    }, semaphore.emergency ? emergencyGreenTime : normalGreenTime); // Change yellow delay to 3000ms
- 
-  }, totalCycleTime); // Change green delay based on emergency mode
-}
-
-// Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
-function checkEmergencyStatus() {
-  for (const semaphore of semaphores) {
-    if (semaphore.carCount >= carCountEmergencyTrigger) {
-      semaphore.emergency = true;
-    } else if (semaphore.carCount <= carCountNoEmergencyTrigger) {
-      semaphore.emergency = false;
-    }
-  }
-}
-
-function setAllSemaphoresRed() {
-  for (const semaphore of semaphores) {
-    semaphore.colorStatus = ColorStatus.RED;
-  }
+  await updateSemaphoreState(); // Altera o estado de cada cor do semáforo
 }
 
 // Busca os semáforos
@@ -150,21 +73,95 @@ async function fetchSemaphores() {
   }
 }
 
-// Atualiza o status dos semáforos
-setInterval(async () => {
+// Mostra os semáforos
+function showSemaphores() {
   for (const semaphore of semaphores) {
-    switch (semaphore.colorStatus) {
-      case ColorStatus.GREEN:
-        await handleGreen(semaphore);
-        break;
-      case ColorStatus.YELLOW:
-        handleYellow(semaphore);
-        break;
-      case ColorStatus.RED:
-        break;
+    console.log(
+      `${semaphore.uuid}: ${getColor(semaphore.description.split("-")[1] as any)}[•]${
+        Colors.END
+      } ${semaphore.description.replace("-", " ")}: ${semaphore.fator}${
+        Colors.END
+      } fator`
+    );
+  }
+  console.log("");
+}
+
+// Inicializa os semáforos
+function initializeSemaphores() {
+  setInterval(() => {
+    for (const semaphore of semaphores) {
+      semaphore.carCount += Math.floor(Math.random() * semaphore.fator) + 1;
+    }
+  }, carTime);
+}
+
+// Mostra o dashboard
+function dashboard() {
+  // Mostra os tempos em segundos
+  console.log("DADOS DE TEMPORIZAÇÃO:");
+  console.log(`Tempo Vermelho: ${normalRedTime / 1000}s | Tempo Vermelho de Emergência: ${emergencyRedTime / 1000}s`);
+  console.log(`Tempo Amarelo: ${normalYellowTime / 1000}s | Tempo Amarelo de Emergência: ${emergencyYellowTime / 1000}s`);
+  console.log(`Tempo Verde: ${normalGreenTime / 1000}s | Tempo Verde de Emergência: ${emergencyGreenTime / 1000}s`);
+  console.log("");
+
+  // Exibe o estado de emergência de cada semáforo
+  console.log("STATUS DOS SEMÁFOROS:");
+}
+
+// Altera o estado de cada cor do semáforo
+function updateSemaphoreState() {
+  let currentIndex = 0;
+  setInterval(() => {
+    const semaphore = semaphores[currentIndex];
+    setTimeout(() => {
+      semaphore.colorStatus = ColorStatus.GREEN; // Set semaphore to green
+      setTimeout(() => {
+        semaphore.colorStatus = ColorStatus.YELLOW; // Set semaphore to yellow
+        setTimeout(() => {
+          semaphore.colorStatus = ColorStatus.RED; // Set semaphore to red
+          currentIndex = (currentIndex + 1) % semaphores.length; // Change to next semaphore
+          checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
+        }, semaphore.emergency ? emergencyRedTime : normalRedTime); // Change red delay based on emergency mode (5s ou 5s)
+      }, semaphore.emergency ? emergencyYellowTime : normalYellowTime); // Change yellow delay based on emergency mode (10s ou 5s)
+    }, semaphore.emergency ? emergencyGreenTime : normalGreenTime); // Change green delay based on emergency mode (10s ou 15s)
+  }, totalCycleTime); // Change green delay based on emergency mode (30s ou 20s)
+}
+
+// Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
+function checkEmergencyStatus() {
+  for (const semaphore of semaphores) {
+    if (semaphore.carCount >= carCountEmergencyTrigger) {
+      semaphore.emergency = true;
+    } else if (semaphore.carCount <= carCountNoEmergencyTrigger) {
+      semaphore.emergency = false;
     }
   }
-}, refreshDisplay);
+}
+
+// Atualiza o status dos semáforos
+function updateSemaphoreStatus() {
+  setInterval(() => {
+    let currentIndex = 0;
+    const semaphore = semaphores[currentIndex];
+
+    setTimeout(() => {
+      semaphore.colorStatus = ColorStatus.GREEN; // Set semaphore to green
+
+      setTimeout(() => {
+        semaphore.colorStatus = ColorStatus.YELLOW; // Set semaphore to yellow
+
+        setTimeout(() => {
+          semaphore.colorStatus = ColorStatus.RED; // Set semaphore to red
+          currentIndex = (currentIndex + 1) % semaphores.length; // Change to next semaphore
+        }, semaphore.emergency ? emergencyRedTime : normalRedTime); // Change red delay based on emergency mode
+
+      }, semaphore.emergency ? emergencyYellowTime : normalYellowTime); // Change yellow delay to 3000ms
+
+    }, semaphore.emergency ? emergencyGreenTime : normalGreenTime); // Change yellow delay to 3000ms
+
+  }, totalCycleTime); // Change green delay based on emergency mode
+}
 
 // Trata o status verde
 async function handleGreen(semaphore: Semaphore) {
@@ -182,8 +179,49 @@ async function handleYellow(semaphore: Semaphore) {
   }
 }
 
-// Mostra o status dos semáforos
-console.log("STATUS DOS SEMAFOROS");
+// Método para atualizar o estado de cada semáforo em 30 segundos
+function changeSemaphoreColors() {
+  setInterval(() => {
+    for (const semaphore of semaphores) {
+      switch (semaphore.colorStatus) {
+        case ColorStatus.GREEN:
+          semaphore.colorStatus = ColorStatus.YELLOW;
+          break;
+        case ColorStatus.YELLOW:
+          semaphore.colorStatus = ColorStatus.RED;
+          break;
+        case ColorStatus.RED:
+          semaphore.colorStatus = ColorStatus.GREEN;
+          break;
+      }
+    }
+  }, totalCycleTime);
+}
+
+// Seta o estado de emergency de um semáforo
+function setSemaphoreEmergency(uuid: string, emergency: boolean) {
+  const semaphore = semaphores.find((semaphore) => semaphore.uuid === uuid);
+  if (semaphore) {
+    semaphore.emergency = emergency;
+  }
+}
+
+// Atualiza o status dos semáforos
+setInterval(async () => {
+  for (const semaphore of semaphores) {
+    switch (semaphore.colorStatus) {
+      case ColorStatus.GREEN:
+        await handleGreen(semaphore);
+        break;
+      case ColorStatus.YELLOW:
+        handleYellow(semaphore);
+        break;
+      case ColorStatus.RED:
+        break;
+    }
+  }
+}, refreshDisplay);
+
 // Mostra o status dos semáforos
 setInterval(() => {
   process.stdout.clearLine(0);
@@ -226,6 +264,7 @@ setInterval(async () => {
 
 // Inicializa os semáforos
 setupDevices();
+
 // Inicializa o servidor
 const app = express();
 const port = 8000;
@@ -246,33 +285,5 @@ app.post("/webhook/:uuid", (req: Request<{ uuid: string }>, res: Response) => {
 });
 // Inicializa o servidor
 app.listen(port, () => {
-  console.log(`RECEBIMENTO DE COMANDOS HABILITADOS\n`);
+  console.log(`RECEBIMENTO DE COMANDOS HABILITADOS`);
 });
-
-// metodo para setar o emergency de um semaforo
-function setSemaphoreEmergency(uuid: string, emergency: boolean) {
-  const semaphore = semaphores.find((semaphore) => semaphore.uuid === uuid);
-  if (semaphore) {
-    semaphore.emergency = emergency;
-  }
-}
-
-// Método para atualizar o estado de cada semáforo
-function updateSemaphoreState() {
-  let currentIndex = 0;
-  setInterval(() => {
-    const semaphore = semaphores[currentIndex];
-    setTimeout(() => {
-      semaphore.colorStatus = ColorStatus.GREEN; // Set semaphore to green
-      setTimeout(() => {
-        semaphore.colorStatus = ColorStatus.YELLOW; // Set semaphore to yellow
-        setTimeout(() => {
-         semaphore.colorStatus = ColorStatus.RED; // Set semaphore to red
-         currentIndex = (currentIndex + 1) % semaphores.length; // Change to next semaphore
-         checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
-        }, semaphore.emergency ? emergencyRedTime : normalRedTime); // Change red delay based on emergency mode (5s ou 5s)
-      }, semaphore.emergency ? emergencyYellowTime : normalYellowTime); // Change yellow delay based on emergency mode (10s ou 5s)
-   }, semaphore.emergency ? emergencyGreenTime : normalGreenTime); // Change green delay based on emergency mode (10s ou 15s)
-  }, totalCycleTime); // Change green delay based on emergency mode (30s ou 20s)
-
-}``
