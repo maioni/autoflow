@@ -1,7 +1,7 @@
 /*
   Esse script simula o comportamento de um semáforo, gerando dados aleatórios de carros passando por ele.
 */
-import { ColorStatus, Semaphore } from "../classes/semaphore";
+import { ColorStatus, EmergencyDuration, NormalDuration, Semaphore } from "../classes/semaphore";
 import { Colors, getColor } from "./colors";
 import express, { Request, Response } from "express";
 
@@ -13,13 +13,13 @@ let timeAux = new Date();
 let refreshDisplay = 1000 * 0.1;
 // Tempo de chegada de carros
 let carTime = 1000 * 5;
-let carCountEmergencyTrigger = 50;
-let carCountNoEmergencyTrigger = 30;
+let carCountEmergencyTrigger = 20;
+let carCountNoEmergencyTrigger = 10;
 // Tempo de saida de carros
 let greenCarTime = 1000 * 3;
 let yellowCarTime = 1000 * 5;
-let carCountReductionGreenTime = 10;
-let carCountReductionYellowTime = 5;
+let carCountReductionGreenTime = 20;
+let carCountReductionYellowTime = 10;
 // Tempo de cada cor do semáforo
 let normalRedTime = 1000 * 5;
 let normalYellowTime = 1000 * 10;
@@ -32,6 +32,23 @@ let diffEmergencyTime = 1000 * 5;
 let emergencyRedTime = normalRedTime;
 let emergencyYellowTime = normalYellowTime - diffEmergencyTime;
 let emergencyGreenTime = normalGreenTime + diffEmergencyTime;
+
+const semaphoreStates = [
+  {color: ColorStatus.GREEN, duration: 15000, emergency: 20000, rush: false},
+  {color: ColorStatus.YELLOW, duration: 10000, emergency: 5000, rush: false},
+  {color: ColorStatus.RED, duration: 5000, emergency: 5000, rush: false},
+];
+
+const numberOfSempahores = 4;
+const semaphoress = [];
+
+for (let index=0; index < numberOfSempahores; index++) {
+  semaphoress[index] = {
+      colorStatus: semaphoreStates[semaphoreStates.length-1].color,
+      emergency: false // Assuming all semaphores start without emergency
+  };
+}
+
 
 // Configurar semáforos
 export async function setupDevices() {
@@ -47,7 +64,9 @@ export async function setupDevices() {
   //mostrar dados do dashboard:
   await dashboard();
 
-  await updateSemaphoreState(); // Altera o estado de cada cor do semáforo
+  // Atualiza o status dos semáforos
+  await toggleSemaphores(0, 0);
+
 }
 
 // Busca os semáforos
@@ -108,6 +127,33 @@ function dashboard() {
   // Exibe o estado de emergência de cada semáforo
   console.log("STATUS DOS SEMÁFOROS:");
 }
+
+// const toggleSemaphores = (semaphore: number, state: number) => {
+//   semaphoress[semaphore] = semaphoreStates[state].color;
+//   setTimeout(() => {
+//       if(state < semaphoreStates.length - 1) {
+//           toggleSemaphores(semaphore, state + 1);
+//       } else {
+//           toggleSemaphores((semaphore + 1) % numberOfSempahores, 0);
+//       }
+//   }, semaphoreStates[state].rushDuration ? semaphoreStates[state].rushDuration : semaphoreStates[state].normalDuration);
+// };
+
+
+
+const toggleSemaphores = (semaphoreIndex: number, stateIndex: number) => {
+  const semaphore = semaphores[semaphoreIndex];
+  semaphore.colorStatus = semaphoreStates[stateIndex].color;
+
+  setTimeout(() => {
+      if(stateIndex < semaphoreStates.length - 1) {
+          toggleSemaphores(semaphoreIndex, stateIndex + 1); // Change to next state
+      } else {
+          toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0); // Change to next semaphore
+          checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
+      }
+  }, semaphoreStates[stateIndex].rush ? semaphoreStates[stateIndex].emergency : semaphoreStates[stateIndex].duration);
+};
 
 // Altera o estado de cada cor do semáforo
 function updateSemaphoreState() {
@@ -232,7 +278,7 @@ setInterval(() => {
     const seconds = Math.floor(currentTime / 1000);
     return `${seconds}s ${getColor(semaphore.colorStatus)}[•]${Colors.END} ${getColor(
       semaphore.description.split("-")[1] as any
-    )} ${semaphore.description.replace("-", " ")}: ${semaphore.carCount} [${emergencyStatus}]${
+    )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
       Colors.END
     } `;
   });
