@@ -1,7 +1,7 @@
 /*
   Esse script simula o comportamento de um semáforo, gerando dados aleatórios de carros passando por ele.
 */
-import { ColorStatus, EmergencyDuration, NormalDuration, Semaphore } from "../classes/semaphore";
+import { ColorStatus, Semaphore } from "../classes/semaphore";
 import { Colors, getColor } from "./colors";
 import express, { Request, Response } from "express";
 
@@ -53,13 +53,13 @@ export async function setupDevices() {
   // Busca os semáforos disponíveis na rede
   await fetchSemaphores();
   // exibir semaforos disponiveis no console
-  await showSemaphores();
+  showSemaphores();
   // Inicializa os semáforos, e incrementa os carros no semáforo a cada 5 segundos (5000ms)
-  await initializeSemaphores();
+  initializeSemaphores();
   //mostrar dados do dashboard e atualizar o status dos semáforos:
-  await dashboard();
+  dashboard();
   // Atualiza o status dos semáforos a cada 30 segundos (30000ms)
-  await toggleSemaphores(0, 0);
+  toggleSemaphores(0, 0);
 }
 
 // Busca os semáforos disponíveis na rede e adiciona na lista de semáforos disponíveis na rede (semaphores)
@@ -192,8 +192,8 @@ setInterval(() => {
   process.stdout.clearLine(0); // Limpa a linha do console
   process.stdout.cursorTo(0); // Move o cursor para o início da linha
   const semaphoresStatus = semaphores.map((semaphore) => {
-    const emergencyStatus = semaphore.emergency ? "!" : ".";
-    let seconds = 0;
+    const emergencyStatus = semaphore.emergency ? "!" : "."; // Exibe ! para estado de emergencia
+    let seconds = 0; // Inicializa os segundos
     switch (semaphore.colorStatus) { // Verifica o status do semáforo
       case ColorStatus.GREEN: // Verifica se o status do semáforo é verde
         seconds = Math.floor((new Date().getTime() - timeAux.getTime()) / 1000); // Calcula os segundos para o status verde
