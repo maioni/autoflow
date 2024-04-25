@@ -119,9 +119,9 @@ function initializeSemaphores() {
 function dashboard() {
   // Mostra os tempos em segundos
   console.log("DADOS DE TEMPORIZAÇÃO:");
-  console.log(`Tempo Vermelho: ${normalRedTime / 1000}s | Tempo Vermelho de Emergência: ${emergencyRedTime / 1000}s`);
-  console.log(`Tempo Amarelo: ${normalYellowTime / 1000}s | Tempo Amarelo de Emergência: ${emergencyYellowTime / 1000}s`);
-  console.log(`Tempo Verde: ${normalGreenTime / 1000}s | Tempo Verde de Emergência: ${emergencyGreenTime / 1000}s`);
+  console.log(`Verde   - Normal: ${normalGreenTime / 1000}s | Emergência: ${emergencyGreenTime / 1000}s`);
+  console.log(`Amarelo - Normal: ${normalYellowTime / 1000}s | Emergência: ${emergencyYellowTime / 1000}s`);
+  console.log(`Vermelho - Normal: ${normalRedTime / 1000}s | Emergência: ${emergencyRedTime / 1000}s`);
   console.log("");
 
   // Exibe o estado de emergência de cada semáforo
