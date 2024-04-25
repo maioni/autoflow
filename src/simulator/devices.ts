@@ -34,9 +34,9 @@ let emergencyYellowTime = normalYellowTime - diffEmergencyTime;
 let emergencyGreenTime = normalGreenTime + diffEmergencyTime;
 
 const semaphoreStates = [
-  {color: ColorStatus.GREEN, duration: 15000, emergency: 20000, rush: false},
-  {color: ColorStatus.YELLOW, duration: 10000, emergency: 5000, rush: false},
-  {color: ColorStatus.RED, duration: 5000, emergency: 5000, rush: false},
+  {color: ColorStatus.GREEN, duration: normalGreenTime, emergency: emergencyGreenTime, rush: false},
+  {color: ColorStatus.YELLOW, duration: normalYellowTime, emergency: emergencyYellowTime, rush: false},
+  {color: ColorStatus.RED, duration: normalRedTime, emergency: emergencyRedTime, rush: false},
 ];
 
 const numberOfSempahores = 4;
@@ -219,7 +219,7 @@ async function handleGreen(semaphore: Semaphore) {
 
 // Trata o status amarelo
 async function handleYellow(semaphore: Semaphore) {
-  if (timeAux.getTime() + normalGreenTime < new Date().getTime()) {
+  if (timeAux.getTime() + normalYellowTime < new Date().getTime()) {
     semaphore.carCount = Math.max(semaphore.carCount - carCountReductionYellowTime, 0);
     timeAux = new Date();
   }
