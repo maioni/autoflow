@@ -193,8 +193,18 @@ setInterval(() => {
   process.stdout.cursorTo(0); // Move o cursor para o início da linha
   const semaphoresStatus = semaphores.map((semaphore) => {
     const emergencyStatus = semaphore.emergency ? "!" : ".";
-    const currentTime = new Date().getTime() - timeAux.getTime();
-    const seconds = Math.floor(currentTime / 1000);
+    let seconds = 0;
+    switch (semaphore.colorStatus) { // Verifica o status do semáforo
+      case ColorStatus.GREEN: // Verifica se o status do semáforo é verde
+        seconds = Math.floor((new Date().getTime() - timeAux.getTime()) / 1000); // Calcula os segundos para o status verde
+        break;
+      case ColorStatus.YELLOW: // Verifica se o status do semáforo é amarelo
+        seconds = Math.floor((new Date().getTime() - timeAux.getTime()) / 1000); // Calcula os segundos para o status amarelo
+        break;
+      case ColorStatus.RED: // Verifica se o status do semáforo é vermelho
+        seconds = 0; // Define os segundos como 0 para o status vermelho
+        break;
+    }
     return `${seconds}s ${getColor(semaphore.colorStatus)}[•]${Colors.END} ${getColor(
       semaphore.description.split("-")[1] as any
     )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
