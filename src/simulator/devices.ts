@@ -14,7 +14,7 @@ let refreshDisplay = 1000 * 0.1; // 100ms
 // Tempo de chegada de carros em cada semáforo
 let carTime = 1000 * 5; // 5s
 // Verificar estado de emergência se o total de carros em um semáforo atingir o limite
-let carCountEmergencyTrigger = 40; // 20 carros
+let carCountEmergencyTrigger = 30; // 20 carros
 let carCountNoEmergencyTrigger = 20; // 10 carros
 // Tempo de saida de carros em cada cor do semáforo
 let carCountReductionGreenTime = 30; // 10 carros
@@ -125,6 +125,7 @@ function dashboard() {
 const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive: boolean) => {
   const semaphore = semaphores[semaphoreIndex]; // Seleciona o semáforo
   const currentState = semaphoreStates[stateIndex]; // Obtém o estado atual do semáforo
+  const currentRush = semaphoreStates[rushActive]; // Obtém o estado atual de emergencia
   
   // Calcula a duração do estado do semáforo com base no "rush" ativo ou não
   let duration: number;
@@ -221,7 +222,7 @@ setInterval(() => {
   process.stdout.clearLine(0); // Limpa a linha do console
   process.stdout.cursorTo(0); // Move o cursor para o início da linha
   const semaphoresStatus = semaphores.map((semaphore) => {
-    const emergencyStatus = semaphore.emergency ? "!" : "."; // Exibe ! para estado de emergencia
+    const emergencyStatus = semaphore.emergency ? "!" : "."; // Exibe ! para estado de emergência
     let seconds = 0; // Inicializa os segundos
     switch (semaphore.colorStatus) { // Verifica o status do semáforo
       case ColorStatus.GREEN: // Verifica se o status do semáforo é verde
