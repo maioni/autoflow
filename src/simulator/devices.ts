@@ -112,9 +112,9 @@ function initializeSemaphores() {
 function dashboard() {
   // Mostra os tempos em segundos
   console.log("DADOS DE TEMPORIZAÇÃO:");
-  console.log(`${Colors.GREEN}Verde${Colors.END}    - Normal: ${normalGreenTime / 1000}s | Emergência: ${emergencyGreenTime / 1000}s`);
-  console.log(`${Colors.YELLOW}Amarelo${Colors.END}  - Normal: ${normalYellowTime / 1000}s | Emergência: 0${emergencyYellowTime / 1000}s`);
-  console.log(`${Colors.RED}Vermelho${Colors.END} - Normal: 0${normalRedTime / 1000}s | Emergência: 0${emergencyRedTime / 1000}s`);
+  console.log(`${Colors.GREEN}Verde${Colors.END}    - Normal[.]: ${normalGreenTime / 1000}s | Emergência[!]: ${emergencyGreenTime / 1000}s`);
+  console.log(`${Colors.YELLOW}Amarelo${Colors.END}  - Normal[.]: ${normalYellowTime / 1000}s | Emergência[!]: 0${emergencyYellowTime / 1000}s`);
+  console.log(`${Colors.RED}Vermelho${Colors.END} - Normal[.]: 0${normalRedTime / 1000}s | Emergência[!]: 0${emergencyRedTime / 1000}s`);
   console.log("");
 
   // Exibe o estado de emergência de cada semáforo e seu respectivos estados (verde, amarelo, vermelho)
@@ -124,16 +124,45 @@ function dashboard() {
 // Altera o estado de cada cor do semáforo a cada 30 segundos (30000ms)
 const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive: boolean) => {
   const semaphore = semaphores[semaphoreIndex]; // Seleciona o semáforo
-  semaphore.colorStatus = semaphoreStates[stateIndex].color; // Altera o estado do semáforo
-  // Verifica se o estado atual é o estado de emergência e altera o tempo de duração do estado atual
+  const currentState = semaphoreStates[stateIndex]; // Obtém o estado atual do semáforo
+  
+  // Calcula a duração do estado do semáforo com base no "rush" ativo ou não
+  let duration: number;
+  if (rushActive) {
+    switch (currentState.color) {
+      case ColorStatus.GREEN:
+        duration = emergencyGreenTime;
+        break;
+      case ColorStatus.YELLOW:
+        duration = emergencyYellowTime;
+        break;
+      case ColorStatus.RED:
+        duration = emergencyRedTime;
+        break;
+      default:
+        duration = currentState.duration;
+    }
+  } else {
+    duration = currentState.duration;
+  }
+
+  semaphore.colorStatus = currentState.color; // Altera o estado do semáforo
+
+  //logs
+  process.stdout.clearLine(0); // Limpa a linha do console
+  process.stdout.cursorTo(0); // Move o cursor para o início da linha
+  console.log(`${getColor(semaphore.colorStatus)}` + duration / 1000 + `s - ` + currentState.color + ` - ` + semaphore.description + ` - ` + semaphore.colorStatus +  `${Colors.END}`);
+  //end logs
+  
+// Verifica se o estado atual é o estado de emergência e altera o tempo de duração do estado atual
   setTimeout(() => {
-      if(stateIndex < semaphoreStates.length - 1) {
-          toggleSemaphores(semaphoreIndex, stateIndex + 1, rushActive); // Altera o estado do semáforo
-      } else {
-          toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, rushActive); // Altera o estado do semáforo
-          checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
-      }
-  }, semaphoreStates[stateIndex].rush ? semaphoreStates[stateIndex].emergency : semaphoreStates[stateIndex].duration);
+    if (stateIndex < semaphoreStates.length - 1) {
+      toggleSemaphores(semaphoreIndex, stateIndex + 1, rushActive); // Altera o estado do semáforo
+    } else {
+      toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, rushActive); // Altera o estado do semáforo
+      checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
+    }
+  }, duration);
 };
 
 // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
