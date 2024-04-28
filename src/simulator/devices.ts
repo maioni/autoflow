@@ -125,37 +125,24 @@ function dashboard() {
 const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive: boolean) => {
   const semaphore = semaphores[semaphoreIndex]; // Seleciona o semáforo
   const currentState = semaphoreStates[stateIndex]; // Obtém o estado atual do semáforo
-  const currentRush = semaphoreStates[rushActive]; // Obtém o estado atual de emergencia
   
   // Calcula a duração do estado do semáforo com base no "rush" ativo ou não
   let duration: number;
-  if (rushActive) {
-    switch (currentState.color) {
-      case ColorStatus.GREEN:
-        duration = emergencyGreenTime;
-        break;
-      case ColorStatus.YELLOW:
-        duration = emergencyYellowTime;
-        break;
-      case ColorStatus.RED:
-        duration = emergencyRedTime;
-        break;
-      default:
-        duration = currentState.duration;
-    }
+  if (rushActive && currentState.rush) {
+    duration = currentState.emergency; // Usa o tempo de emergência se o "rush" estiver ativo e o estado do semáforo também for de emergência
   } else {
-    duration = currentState.duration;
+    duration = currentState.duration; // Caso contrário, usa o tempo normal
   }
 
   semaphore.colorStatus = currentState.color; // Altera o estado do semáforo
 
-  //logs
+  // logs - comentar quando nao utilizar
   process.stdout.clearLine(0); // Limpa a linha do console
   process.stdout.cursorTo(0); // Move o cursor para o início da linha
   console.log(`${getColor(semaphore.colorStatus)}` + duration / 1000 + `s - ` + currentState.color + ` - ` + semaphore.description + ` - ` + semaphore.colorStatus +  `${Colors.END}`);
-  //end logs
+  // end logs
   
-// Verifica se o estado atual é o estado de emergência e altera o tempo de duração do estado atual
+  // Verifica se o estado atual é o estado de emergência e altera o tempo de duração do estado atual
   setTimeout(() => {
     if (stateIndex < semaphoreStates.length - 1) {
       toggleSemaphores(semaphoreIndex, stateIndex + 1, rushActive); // Altera o estado do semáforo
@@ -221,26 +208,32 @@ setInterval(async () => {
 setInterval(() => {
   process.stdout.clearLine(0); // Limpa a linha do console
   process.stdout.cursorTo(0); // Move o cursor para o início da linha
+  const currentTime = new Date().getTime(); // Obtém o tempo atual
+
   const semaphoresStatus = semaphores.map((semaphore) => {
     const emergencyStatus = semaphore.emergency ? "!" : "."; // Exibe ! para estado de emergência
+
     let seconds = 0; // Inicializa os segundos
+
     switch (semaphore.colorStatus) { // Verifica o status do semáforo
       case ColorStatus.GREEN: // Verifica se o status do semáforo é verde
-        seconds = Math.floor((new Date().getTime() - timeAux.getTime()) / 1000); // Calcula os segundos para o status verde
+        seconds = Math.max(Math.floor((currentTime - timeAux.getTime()) / 1000), 0); // Calcula os segundos para o status verde
         break;
       case ColorStatus.YELLOW: // Verifica se o status do semáforo é amarelo
-        seconds = Math.floor((new Date().getTime() - timeAux.getTime()) / 1000); // Calcula os segundos para o status amarelo
+        seconds = Math.max(Math.floor((currentTime - timeAux.getTime()) / 1000), 0); // Calcula os segundos para o status amarelo
         break;
-      case ColorStatus.RED: // Verifica se o status do semáforo é vermelho
-        seconds = 0; // Define os segundos como 0 para o status vermelho
+      case ColorStatus.RED: // Verifica se o status do semáforo é vermelhoa
+        seconds = Math.max(Math.floor((currentTime - timeAux.getTime() - normalYellowTime) / 1000), 0); // Calcula os segundos para o status vermelho
         break;
     }
+
     return `${getColor(semaphore.colorStatus)}${seconds}s [•]${Colors.END} ${getColor(
       semaphore.description.split("-")[1] as any
     )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
       Colors.END // Exibe o status dos semáforos no console
     } `;
   });
+
   process.stdout.write(semaphoresStatus.join(" | "));
 }, refreshDisplay);
 
