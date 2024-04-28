@@ -112,9 +112,9 @@ function initializeSemaphores() {
 function dashboard() {
   // Mostra os tempos em segundos
   console.log("DADOS DE TEMPORIZAÇÃO:");
-  console.log(`Verde    - Normal: ${normalGreenTime / 1000}s | Emergência: ${emergencyGreenTime / 1000}s`);
-  console.log(`Amarelo  - Normal: ${normalYellowTime / 1000}s | Emergência: 0${emergencyYellowTime / 1000}s`);
-  console.log(`Vermelho - Normal: 0${normalRedTime / 1000}s | Emergência: 0${emergencyRedTime / 1000}s`);
+  console.log(`${Colors.GREEN}Verde${Colors.END}    - Normal: ${normalGreenTime / 1000}s | Emergência: ${emergencyGreenTime / 1000}s`);
+  console.log(`${Colors.YELLOW}Amarelo${Colors.END}  - Normal: ${normalYellowTime / 1000}s | Emergência: 0${emergencyYellowTime / 1000}s`);
+  console.log(`${Colors.RED}Vermelho${Colors.END} - Normal: 0${normalRedTime / 1000}s | Emergência: 0${emergencyRedTime / 1000}s`);
   console.log("");
 
   // Exibe o estado de emergência de cada semáforo e seu respectivos estados (verde, amarelo, vermelho)
@@ -205,7 +205,7 @@ setInterval(() => {
         seconds = 0; // Define os segundos como 0 para o status vermelho
         break;
     }
-    return `${seconds}s ${getColor(semaphore.colorStatus)}[•]${Colors.END} ${getColor(
+    return `${getColor(semaphore.colorStatus)}${seconds}s [•]${Colors.END} ${getColor(
       semaphore.description.split("-")[1] as any
     )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
       Colors.END // Exibe o status dos semáforos no console
