@@ -59,7 +59,7 @@ export async function setupDevices() {
   //mostrar dados do dashboard e atualizar o status dos semáforos:
   dashboard();
   // Atualiza o status dos semáforos a cada 30 segundos (30000ms)
-  toggleSemaphores(0, 0);
+  toggleSemaphores(0, 0, false);
 }
 
 // Busca os semáforos disponíveis na rede e adiciona na lista de semáforos disponíveis na rede (semaphores)
@@ -122,15 +122,15 @@ function dashboard() {
 }
 
 // Altera o estado de cada cor do semáforo a cada 30 segundos (30000ms)
-const toggleSemaphores = (semaphoreIndex: number, stateIndex: number) => {
+const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive: boolean) => {
   const semaphore = semaphores[semaphoreIndex]; // Seleciona o semáforo
   semaphore.colorStatus = semaphoreStates[stateIndex].color; // Altera o estado do semáforo
   // Verifica se o estado atual é o estado de emergência e altera o tempo de duração do estado atual
   setTimeout(() => {
       if(stateIndex < semaphoreStates.length - 1) {
-          toggleSemaphores(semaphoreIndex, stateIndex + 1); // Altera o estado do semáforo
+          toggleSemaphores(semaphoreIndex, stateIndex + 1, rushActive); // Altera o estado do semáforo
       } else {
-          toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0); // Altera o estado do semáforo
+          toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, rushActive); // Altera o estado do semáforo
           checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
       }
   }, semaphoreStates[stateIndex].rush ? semaphoreStates[stateIndex].emergency : semaphoreStates[stateIndex].duration);
