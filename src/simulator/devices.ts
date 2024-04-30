@@ -141,14 +141,17 @@ const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive
   process.stdout.cursorTo(0); // Move o cursor para o início da linha
   console.log(`${getColor(semaphore.colorStatus)}` + duration / 1000 + `s - ` + currentState.color + ` - ` + semaphore.description + ` - ` + semaphore.colorStatus +  `${Colors.END}`);
   // end logs
-  
+
   // Verifica se o estado atual é o estado de emergência e altera o tempo de duração do estado atual
   setTimeout(() => {
     if (stateIndex < semaphoreStates.length - 1) {
+      // rushActive = true; // Ativa o "rush"
+      console.log(rushActive);
       toggleSemaphores(semaphoreIndex, stateIndex + 1, rushActive); // Altera o estado do semáforo
     } else {
-      toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, rushActive); // Altera o estado do semáforo
       checkEmergencyStatus(); // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
+      console.log(rushActive);
+      toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, !!checkEmergencyStatus()); // Altera o estado do semáforo
     }
   }, duration);
 };
@@ -158,8 +161,15 @@ function checkEmergencyStatus() {
   for (const semaphore of semaphores) {
     if (semaphore.carCount >= carCountEmergencyTrigger) { // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
       semaphore.emergency = true; // Aciona o estado de emergência
-    } else if (semaphore.carCount <= carCountNoEmergencyTrigger) { // Verifica se o total de carros em um semáforo atingiu o limite para desativar o estado de emergência
+      setSemaphoreEmergency(semaphore.uuid, true);
+      console.log(`${Colors.RED}EMERGÊNCIA ACIONADA!${Colors.END}`); // Exibe a mensagem de emergência acionada
+      return true;
+    } 
+    if (semaphore.carCount <= carCountNoEmergencyTrigger) { // Verifica se o total de carros em um semáforo atingiu o limite para desativar o estado de emergência
       semaphore.emergency = false; // Desativa o estado de emergência
+      setSemaphoreEmergency(semaphore.uuid, false);
+      console.log(`${Colors.GREEN}EMERGÊNCIA DESATIVADA!${Colors.END}`); // Exibe a mensagem de emergência desativada
+      return false;
     }
   }
 }
