@@ -6,7 +6,7 @@ import { Colors, getColor } from "./colors";
 import express, { Request, Response } from "express";
 
 // Logs
-const changeSemaphoreLog = true;
+const changeSemaphoreLog = false;
 const emergencyTriggerRushActiveLogs = false;
 const emergencyTriggerDurationConditionLogs = false;
 const emergencyTriggerMessageLogs = false;
@@ -129,9 +129,9 @@ function dashboard() {
   // Mostra os tempos em segundos
   if (rushTimeInfo) {
     console.log("DADOS DE TEMPORIZAÇÃO:");
-    console.log(`${Colors.GREEN}Verde${Colors.END}    - Normal[.]: ${normalGreenTime / 1000}s | Emergência[!]: ${emergencyGreenTime / 1000}s`);
-    console.log(`${Colors.YELLOW}Amarelo${Colors.END}  - Normal[.]: ${normalYellowTime / 1000}s | Emergência[!]: 0${emergencyYellowTime / 1000}s`);
-    console.log(`${Colors.RED}Vermelho${Colors.END} - Normal[.]: 0${normalRedTime / 1000}s | Emergência[!]: 0${emergencyRedTime / 1000}s`);
+    console.log(`${Colors.GREEN}Verde${Colors.END}    - Normal .. : ${normalGreenTime / 1000}s | Emergência !! : ${emergencyGreenTime / 1000}s`);
+    console.log(`${Colors.YELLOW}Amarelo${Colors.END}  - Normal .. : ${normalYellowTime / 1000}s | Emergência !! : 0${emergencyYellowTime / 1000}s`);
+    console.log(`${Colors.RED}Vermelho${Colors.END} - Normal .. : 0${normalRedTime / 1000}s | Emergência !! : 0${emergencyRedTime / 1000}s`);
     console.log("");
   }
 
@@ -245,7 +245,7 @@ setInterval(() => {
   const currentTime = new Date().getTime(); // Obtém o tempo atual
 
   const semaphoresStatus = semaphores.map((semaphore) => {
-    const emergencyStatus = semaphore.emergency ? "!" : "."; // Exibe ! para estado de emergência
+    const emergencyStatus = semaphore.emergency ? "!!" : ".."; // Exibe ! para estado de emergência
 
     let seconds = 0; // Inicializa os segundos
 
@@ -261,19 +261,17 @@ setInterval(() => {
         break;
     }
 
+    let message = `${getColor(semaphore.colorStatus)} [•]${Colors.END} ${getColor(
+      semaphore.description.split("-")[1] as any
+    )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} ${emergencyStatus}${
+      Colors.END // Exibe o status dos semáforos no console
+    } `;
+
     if (secondCounterLog) {
-      return `${getColor(semaphore.colorStatus)}${seconds}s [•]${Colors.END} ${getColor(
-        semaphore.description.split("-")[1] as any
-      )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
-        Colors.END // Exibe o status dos semáforos no console
-      } `;
-    } else {
-      return `${getColor(semaphore.colorStatus)} [•]${Colors.END} ${getColor(
-        semaphore.description.split("-")[1] as any
-      )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
-        Colors.END // Exibe o status dos semáforos no console
-      } `;
-    }
+      message = message.replace(` [`, `${seconds}s []`);
+    } 
+
+    return message;
   });
 
   process.stdout.write(semaphoresStatus.join(" | "));
