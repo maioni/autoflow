@@ -49,10 +49,10 @@ const semaphoreStates = [
 ];
 // Número de semáforos e seus estados iniciais
 const numberOfSempahores = 4; // 4 semáforos
-const semaphoress = []; // Lista de semáforos
+const arrayOfSemaphores = []; // Lista de semáforos
 // Inicializa os semáforos com o estado inicial
 for (let index=0; index < numberOfSempahores; index++) {
-  semaphoress[index] = {
+  arrayOfSemaphores[index] = {
       colorStatus: semaphoreStates[semaphoreStates.length-1].color,
       emergency: false // Todos os semáforos comecam com estado de emergencia desligado (false)
   };
@@ -73,7 +73,7 @@ export async function setupDevices() {
 }
 
 // Busca os semáforos disponíveis na rede e adiciona na lista de semáforos disponíveis na rede (semaphores)
-async function fetchSemaphores() {
+export async function fetchSemaphores() {
   const res = await fetch(
     "http://10.10.10.104:8000/discovery/resources?capability=semaphore"
   );
@@ -96,7 +96,7 @@ async function fetchSemaphores() {
 }
 
 // Mostra os semáforos disponíveis na rede no console com seus respectivos fatores de incremento de carros (fator)
-function showSemaphores() {
+export function showSemaphores() {
   if (factorInfo) {
     for (const semaphore of semaphores) {
       let uuid = "";
@@ -116,7 +116,7 @@ function showSemaphores() {
 }
 
 // Inicializa os semáforos e incrementa os carros no semáforo a cada 5 segundos (5000ms)
-function initializeSemaphores() {
+export function initializeSemaphores() {
   setInterval(() => {
     for (const semaphore of semaphores) {
       semaphore.carCount += Math.floor(Math.random() * semaphore.fator) + 1;
@@ -125,7 +125,7 @@ function initializeSemaphores() {
 }
 
 // Mostra o dashboard com os tempos de cada cor do semáforo em segundos e o status dos semáforos (verde, amarelo, vermelho)
-function dashboard() {
+export function dashboard() {
   // Mostra os tempos em segundos
   if (rushTimeInfo) {
     console.log("DADOS DE TEMPORIZAÇÃO:");
@@ -140,7 +140,7 @@ function dashboard() {
 }
 
 // Altera o estado de cada cor do semáforo a cada 30 segundos (30000ms)
-const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive: boolean) => {
+export const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive: boolean) => {
   const semaphore = semaphores[semaphoreIndex]; // Seleciona o semáforo
   const currentState = semaphoreStates[stateIndex]; // Obtém o estado atual do semáforo
   
@@ -179,7 +179,7 @@ const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive
 };
 
 // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
-function checkEmergencyStatus() {
+export function checkEmergencyStatus() {
   let rush = false;
   for (const semaphore of semaphores) {
     if (semaphore.carCount >= carCountEmergencyTrigger) { // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
@@ -199,7 +199,7 @@ function checkEmergencyStatus() {
 }
 
 // Trata o status verde do semáforo
-async function handleGreen(semaphore: Semaphore) { // Trata o status verde do semáforo
+export async function handleGreen(semaphore: Semaphore) { // Trata o status verde do semáforo
   if (timeAux.getTime() + normalGreenTime < new Date().getTime()) { // Verifica se o tempo de verde do semáforo já foi atingido
     semaphore.carCount = Math.max(semaphore.carCount - carCountReductionGreenTime, 0); // Reduz o total de carros no semáforo
     timeAux = new Date(); // Atualiza o tempo auxiliar
@@ -207,7 +207,7 @@ async function handleGreen(semaphore: Semaphore) { // Trata o status verde do se
 }
 
 // Trata o status amarelo do semáforo
-async function handleYellow(semaphore: Semaphore) { // Trata o status amarelo do semáforo
+export async function handleYellow(semaphore: Semaphore) { // Trata o status amarelo do semáforo
   if (timeAux.getTime() + normalYellowTime < new Date().getTime()) { // Verifica se o tempo de amarelo do semáforo já foi atingido
     semaphore.carCount = Math.max(semaphore.carCount - carCountReductionYellowTime, 0); // Reduz o total de carros no semáforo
     timeAux = new Date(); // Atualiza o tempo auxiliar
@@ -215,7 +215,7 @@ async function handleYellow(semaphore: Semaphore) { // Trata o status amarelo do
 }
 
 // Seta o estado de emergência de um semáforo (true/false) com base no uuid do semáforo
-function setSemaphoreEmergency(uuid: string, emergency: boolean) {
+export function setSemaphoreEmergency(uuid: string, emergency: boolean) {
   const semaphore = semaphores.find((semaphore) => semaphore.uuid === uuid); // Busca o semáforo pelo uuid
   if (semaphore) {
     semaphore.emergency = emergency; // Seta o estado de emergência do semáforo
@@ -325,3 +325,5 @@ app.post("/webhook/:uuid", (req: Request<{ uuid: string }>, res: Response) => {
 app.listen(port, () => {
   console.log(`RECEBIMENTO DE COMANDOS HABILITADOS`); // Exibe a mensagem de sucesso
 });
+export { Semaphore };
+
