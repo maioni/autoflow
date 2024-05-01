@@ -7,9 +7,10 @@ import express, { Request, Response } from "express";
 
 // Logs
 const changeSemaphoreLog = true;
-const emergencyTriggerRushActiveLogs = true;
-const emergencyTriggerDurationConditionLogs = true;
-const emergencyTriggerMessageLogs = true;
+const emergencyTriggerRushActiveLogs = false;
+const emergencyTriggerDurationConditionLogs = false;
+const emergencyTriggerMessageLogs = false;
+const secondCounterLog = false;
 // Paineis informativos
 const factorInfo = true;
 const uudidInfo = false;
@@ -145,7 +146,7 @@ const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive
   
   // Calcula a duração do estado do semáforo com base no "rush" ativo ou não
   let duration: number;
-  if (rushActive || currentState.rush) {
+  if (rushActive) {
     duration = currentState.emergency; // Usa o tempo de emergência se o "rush" estiver ativo e o estado do semáforo também for de emergência
     if (emergencyTriggerDurationConditionLogs) console.log("rushActive = true >> " + rushActive + " - currentState.rush = true >> " + currentState.rush + " duration: " + duration);
   } else {
@@ -153,8 +154,7 @@ const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive
     if (emergencyTriggerDurationConditionLogs) console.log("rushActive = false >> " + rushActive + " - currentState.rush = false >> " + currentState.rush + " duration: " + duration);
   }
 
-
-  semaphore.colorStatus = currentState.color; // Altera o estado do semáforo
+  semaphore.colorStatus = currentState.color; // cor do semáforo 
 
   // logs - comentar quando nao utilizar
   if (changeSemaphoreLog){
@@ -171,29 +171,31 @@ const toggleSemaphores = (semaphoreIndex: number, stateIndex: number, rushActive
       if (emergencyTriggerRushActiveLogs) console.log("rushActive " + rushActive);
       toggleSemaphores(semaphoreIndex, stateIndex + 1, rushActive); // Altera o estado do semáforo
     } else {
-      let rushActive: boolean = checkEmergencyStatus() || false; // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
-      if (emergencyTriggerRushActiveLogs) console.log("rushActive " + rushActive);
-      toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, rushActive); // Altera o estado do semáforo
+      let rush: boolean = checkEmergencyStatus() || false; // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
+      if (emergencyTriggerRushActiveLogs) console.log("rushActive " + rush);
+      toggleSemaphores((semaphoreIndex + 1) % numberOfSempahores, 0, rush); // Altera o estado do semáforo
     }
   }, duration);
 };
 
 // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
 function checkEmergencyStatus() {
+  let rush = false;
   for (const semaphore of semaphores) {
     if (semaphore.carCount >= carCountEmergencyTrigger) { // Verifica se o total de carros em um semáforo atingiu o limite para acionar o estado de emergência
       semaphore.emergency = true; // Aciona o estado de emergência
       setSemaphoreEmergency(semaphore.uuid, true);
       if (emergencyTriggerMessageLogs) console.log(`${Colors.RED}EMERGÊNCIA ACIONADA!${Colors.END}`); // Exibe a mensagem de emergência acionada
-      return true;
-    } 
+      rush = true;
+    }
     if (semaphore.carCount <= carCountNoEmergencyTrigger) { // Verifica se o total de carros em um semáforo atingiu o limite para desativar o estado de emergência
       semaphore.emergency = false; // Desativa o estado de emergência
       setSemaphoreEmergency(semaphore.uuid, false);
       if (emergencyTriggerMessageLogs) console.log(`${Colors.GREEN}EMERGÊNCIA DESATIVADA!${Colors.END}`); // Exibe a mensagem de emergência desativada
-      return false;
+      rush = false;
     }
   }
+  return rush;
 }
 
 // Trata o status verde do semáforo
@@ -259,11 +261,19 @@ setInterval(() => {
         break;
     }
 
-    return `${getColor(semaphore.colorStatus)}${seconds}s [•]${Colors.END} ${getColor(
-      semaphore.description.split("-")[1] as any
-    )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
-      Colors.END // Exibe o status dos semáforos no console
-    } `;
+    if (secondCounterLog) {
+      return `${getColor(semaphore.colorStatus)}${seconds}s [•]${Colors.END} ${getColor(
+        semaphore.description.split("-")[1] as any
+      )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
+        Colors.END // Exibe o status dos semáforos no console
+      } `;
+    } else {
+      return `${getColor(semaphore.colorStatus)} [•]${Colors.END} ${getColor(
+        semaphore.description.split("-")[1] as any
+      )} ${semaphore.description.replace("-", " ").replace("semaphore", "s.")}: ${semaphore.carCount} [${emergencyStatus}]${
+        Colors.END // Exibe o status dos semáforos no console
+      } `;
+    }
   });
 
   process.stdout.write(semaphoresStatus.join(" | "));
