@@ -1,0 +1,6 @@
+
+const devices = require('./devices');
+
+test('Check if devices array is not empty', () => {
+  expect(devices.length).toBeGreaterThan(0);
+});

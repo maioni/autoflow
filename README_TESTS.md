@@ -47,3 +47,8 @@ npx ts-jest config:init
 
 babel para suporte import e export
 npm install --save-dev @babel/preset-typescript @babel/preset-env babel-jest @types/jest
+
+
+## CONFIG FILES
+
+jest.config.js // 

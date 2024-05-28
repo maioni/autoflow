@@ -1,0 +1,152 @@
+describe('addDevice', () => {
+    it('should not add a device with missing id', () => {
+        const device = {
+            name: 'Device 3',
+            type: 'sensor',
+        };
+
+        devices.addDevice(device);
+
+        const result = devices.getDevices();
+        expect(result.length).toBe(1); // Only one device should be added
+    });
+
+    it('should not add a device with missing name', () => {
+        const device = {
+            id: 3,
+            type: 'sensor',
+        };
+
+        devices.addDevice(device);
+
+        const result = devices.getDevices();
+        expect(result.length).toBe(1); // Only one device should be added
+    });
+
+    it('should not add a device with missing type', () => {
+        const device = {
+            id: 3,
+            name: 'Device 3',
+        };
+
+        devices.addDevice(device);
+
+        const result = devices.getDevices();
+        expect(result.length).toBe(1); // Only one device should be added
+    });
+});
+
+describe('removeDevice', () => {
+    it('should not remove a device with non-existent id', () => {
+        const device = {
+            id: 3,
+            name: 'Device 3',
+            type: 'sensor',
+        };
+
+        devices.addDevice(device);
+        devices.removeDevice(4); // Non-existent id
+
+        const result = devices.getDevices();
+        expect(result.length).toBe(1); // Device should not be removed
+    });
+});
+
+describe('getDeviceById', () => {
+    it('should return null when device with given id is not found', () => {
+        const device = {
+            id: 3,
+            name: 'Device 3',
+            type: 'sensor',
+        };
+
+        devices.addDevice(device);
+
+        const result = devices.getDeviceById(4); // Non-existent id
+        expect(result).toBeNull();
+    });
+});
+
+describe('setupDevices', () => {
+    it('should set up devices successfully', async () => {
+        // Test setupDevices function here
+    });
+});
+
+
+describe('addDevice', () => {
+
+    
+        it('should not add a device with missing id', () => {
+            const device = {
+                name: 'Device 3',
+                type: 'sensor',
+            };
+
+            devices.addDevice(device);
+
+            const result = devices.getDevices();
+            expect(result.length).toBe(1); // Only one device should be added
+        });
+
+        it('should not add a device with missing name', () => {
+            const device = {
+                id: 3,
+                type: 'sensor',
+            };
+
+            devices.addDevice(device);
+
+            const result = devices.getDevices();
+            expect(result.length).toBe(1); // Only one device should be added
+        });
+
+        it('should not add a device with missing type', () => {
+            const device = {
+                id: 3,
+                name: 'Device 3',
+            };
+
+            devices.addDevice(device);
+
+            const result = devices.getDevices();
+            expect(result.length).toBe(1); // Only one device should be added
+        });
+    });
+
+    describe('removeDevice', () => {
+        it('should not remove a device with non-existent id', () => {
+            const device = {
+                id: 3,
+                name: 'Device 3',
+                type: 'sensor',
+            };
+
+            devices.addDevice(device);
+            devices.removeDevice(4); // Non-existent id
+
+            const result = devices.getDevices();
+            expect(result.length).toBe(1); // Device should not be removed
+        });
+    });
+
+    describe('getDeviceById', () => {
+        it('should return null when device with given id is not found', () => {
+            const device = {
+                id: 3,
+                name: 'Device 3',
+                type: 'sensor',
+            };
+
+            devices.addDevice(device);
+
+            const result = devices.getDeviceById(4); // Non-existent id
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('setupDevices', () => {
+        it('should set up devices successfully', async () => {
+            // Test setupDevices function here
+        });
+    });

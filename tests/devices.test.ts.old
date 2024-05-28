@@ -1,0 +1,121 @@
+import { expect } from 'chai'; // Import the expect function from the chai library
+import { setupDevices, fetchSemaphores, showSemaphores, initializeSemaphores, dashboard, toggleSemaphores, checkEmergencyStatus, handleGreen, handleYellow, setSemaphoreEmergency } from './devices';
+import { Semaphore } from './devices'; // Import the Semaphore type
+import { ColorStatus } from '../classes/semaphore';
+
+describe('Devices', () => {
+    describe('setupDevices', () => {
+        it('should set up the devices', async () => {
+            // Test setupDevices function here
+            const result = await setupDevices();
+            // Add your assertions here
+            expect(result).to.be.true;
+        });
+    });
+
+    describe('fetchSemaphores', () => {
+        it('should fetch semaphores', async () => {
+            // Test fetchSemaphores function here
+            const result = await fetchSemaphores();
+            // Add your assertions here
+            expect(result).to.be.an('array');
+            expect(result).to.have.lengthOf(4);
+        });
+    });
+
+    describe('showSemaphores', () => {
+        it('should show semaphores', () => {
+            // Test showSemaphores function here
+            const result = showSemaphores();
+            // Add your assertions here
+            // Example assertion: expect(result).to.equal('Expected value');
+        });
+    });
+
+    describe('initializeSemaphores', () => {
+        it('should initialize semaphores', () => {
+            // Test initializeSemaphores function here
+            initializeSemaphores();
+            // Add your assertions here
+            // Example assertion: expect(someValue).to.equal('Expected value');
+        });
+    });
+
+    describe('dashboard', () => {
+        it('should display the dashboard', () => {
+            // Test dashboard function here
+            const result = dashboard();
+            // Add your assertions here
+            // Example assertion: expect(result).to.equal('Expected value');
+        });
+    });
+
+    describe('toggleSemaphores', () => {
+        it('should toggle semaphores', () => {
+            // Test toggleSemaphores function here
+            const semaphoreIndex = 0;
+            const stateIndex = 1;
+            const rushActive = true;
+            toggleSemaphores(semaphoreIndex, stateIndex, rushActive);
+            // Add your assertions here
+            // Example assertion: expect(someValue).to.equal('Expected value');
+        });
+    });
+
+    describe('checkEmergencyStatus', () => {
+        it('should check emergency status', () => {
+            // Test checkEmergencyStatus function here
+            const result = checkEmergencyStatus();
+            // Add your assertions here
+            // Example assertion: expect(result).to.be.true;
+        });
+    });
+
+    describe('handleGreen', () => {
+        it('should handle green status', async () => {
+            // Test handleGreen function here
+            const semaphore: Semaphore = { 
+                uuid: 'some-uuid',
+                location: { 'lat': -23.1, 'lon': -46.8 }, // Fix: Change the type to string
+                carCount: 0,
+                description: 'some-description',
+                fator: 1.0,
+                colorStatus: ColorStatus.GREEN, // Fix: Change the value to ColorStatus.GREEN
+                emergency: false 
+            };
+            const result = await handleGreen(semaphore);
+            // Add your assertions here
+            // Example assertion: expect(result).to.equal('Expected value');
+        });
+        // Example assertion: expect(result).to.equal('Expected value');
+    });
+
+    describe('handleYellow', () => {
+        it('should handle yellow status', async () => {
+            // Test handleYellow function here
+            const semaphore: Semaphore = { 
+                uuid: 'some-uuid',
+                location:  { 'lat': -23.1, 'lon': -46.8 }, // Fix: Change the type to string
+                carCount: 0,
+                description: 'some-description',
+                fator: 1.0,
+                colorStatus: ColorStatus.YELLOW, 
+                emergency: false 
+            };
+            const result = await handleYellow(semaphore);
+            // Add your assertions here
+            // Example assertion: expect(result).to.equal('Expected value');
+        })
+    describe('setSemaphoreEmergency', () => {
+        it('should set semaphore emergency status', () => {
+            // Test setSemaphoreEmergency function here
+            const uuid = 'some-uuid';
+            const emergency = true;
+            setSemaphoreEmergency(uuid, emergency);
+            // Add your assertions here
+            // Example assertion: expect(someValue).to.equal('Expected value');
+        })
+    })
+    });
+
+});
