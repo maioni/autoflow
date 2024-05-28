@@ -10,5 +10,11 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true
-  }
+  },
+  "exclude":[ 
+  "./node_modules",
+  "./jest.config.js",
+  "./tests",
+  "./build"
+  ]
 }
