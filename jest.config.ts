@@ -14,11 +14,9 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {
-    '^.+\\.ts$': 'ts-jest',
-  },
-  globals: {
-    'ts-jest': {
+    '^.+\\.tsx?$': ['ts-jest', {
+      // ts-jest configuration goes here // old tsconfig.json
       tsconfig: 'tsconfig.json',
-    },
+    }],
   },
 };
