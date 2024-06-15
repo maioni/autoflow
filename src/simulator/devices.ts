@@ -1,56 +1,60 @@
 /*
   Esse script simula o comportamento de um semáforo, gerando dados aleatórios de carros passando por ele.
+  Para rodar a aplicacao, basta executar o comando `yarn start:dev` no terminal
+  
 */
-import { ColorStatus, Semaphore } from "../classes/semaphore";
-import { Colors, getColor } from "./colors";
-import express, { Request, Response } from "express";
+import { ColorStatus, Semaphore } from "../classes/semaphore"; // Importa a classe Semaphore para simular o comportamento de um semáforo
+import { Colors, getColor } from "./colors"; // Importa as cores do console para exibir as mensagens
+import express, { Request, Response } from "express"; // Importa o express para criar o servidor HTTP
 
-// Logs
+// Condiguracao dos Logs
 const changeSemaphoreLog = false;
 const emergencyTriggerRushActiveLogs = false;
 const emergencyTriggerDurationConditionLogs = false;
 const emergencyTriggerMessageLogs = false;
 const secondCounterLog = false;
-// Paineis informativos
+// Configuracao dos Paineis informativos
 const factorInfo = true;
 const uudidInfo = false;
 const rushTimeInfo = true;
-// Lista de semáforos disponíveis
+// Lista vazia de semáforos
 const semaphores: Semaphore[] = [];
-// Tempo auxiliar para controle de carros
+// Tempo auxiliar para controle da mudanca de estado dos semáforo
 let timeAux = new Date();
-// Tempo de refresh do display
+// Tempo de refresh do display a ser exibido no console
 let refreshDisplay = 1000 * 0.1; // 100ms
 // Tempo de chegada de carros em cada semáforo
 let carTime = 1000 * 5; // 5s
-// Verificar estado de emergência se o total de carros em um semáforo atingir o limite
+// Verificar estado de emergência se o total de carros em um semáforo atingir o limite maior, 
+// acionando o estado de emergência, ou desativando o estado de emergência quando o limite menor for atingido
 let carCountEmergencyTrigger = 30; // 20 carros
 let carCountNoEmergencyTrigger = 20; // 10 carros
-// Tempo de saida de carros em cada cor do semáforo
+// Tempos de saida de carros em cada estado de cor do semáforo
 let carCountReductionGreenTime = 30; // 10 carros
 let carCountReductionYellowTime = 10; // 2 carros
-// Tempo de cada cor do semáforo em modo normal
+// Tempos de cada estado de cor do semáforo em modo normal
 let normalRedTime = 1000 * 5; // 5s
 let normalYellowTime = 1000 * 10; // 10s
 let normalGreenTime = 1000 * 15; // 15s
 // Tempo total de ciclo do semáforo
 let totalCycleTime = normalRedTime + normalYellowTime + normalGreenTime;
-// Tempo de diferenca de emergencia entre as cores do semáforo
+// Tempo de diferenca de emergencia entre os estados de cores do semáforo
 let diffEmergencyTime = 1000 * 5; // 5s
-// Tempo emergencia de cada cor do semáforo em modo emergência
+// Tempos de emergencia de cada estado de cor do semáforo em modo emergência (aqui o verde aumenta em 5s, e o amarelo diminue em 5s)
 let emergencyRedTime = normalRedTime; // 5s
 let emergencyYellowTime = normalYellowTime - diffEmergencyTime; // 5s
 let emergencyGreenTime = normalGreenTime + diffEmergencyTime; // 20s
 // Estados do semáforo e seus tempos de duração em milissegundos (ms)
+// aqui é configurado o tempo de cada estado do semáforo (verde, amarelo, vermelho) e o tempo de emergência de cada estado, bem como se o estado é de "rush" ou não
 const semaphoreStates = [
   {color: ColorStatus.GREEN, duration: normalGreenTime, emergency: emergencyGreenTime, rush: false}, // rush: false = normal time, rush: true = emergency time
   {color: ColorStatus.YELLOW, duration: normalYellowTime, emergency: emergencyYellowTime, rush: false}, // rush: false = normal time, rush: true = emergency time
   {color: ColorStatus.RED, duration: normalRedTime, emergency: emergencyRedTime, rush: false}, // rush: false = normal time, rush: true = emergency time
 ];
-// Número de semáforos e seus estados iniciais
+// Configuracao do Número de semáforos e seus estados iniciais (4 semaforos e array vazio de semáforos)
 const numberOfSempahores = 4; // 4 semáforos
 const arrayOfSemaphores = []; // Lista de semáforos
-// Inicializa os semáforos com o estado inicial
+// Inicializa os semáforos com o estado inicial de cor vermelha e sem estado de emergência
 for (let index=0; index < numberOfSempahores; index++) {
   arrayOfSemaphores[index] = {
       colorStatus: semaphoreStates[semaphoreStates.length-1].color,
@@ -58,7 +62,7 @@ for (let index=0; index < numberOfSempahores; index++) {
   };
 }
 
-// Configurar semáforos e seus estados iniciais (verde, amarelo, vermelho)
+// Funcao que Configura os semáforos e seus estados iniciais (verde, amarelo, vermelho)
 export async function setupDevices() {
   // Busca os semáforos disponíveis na rede
   await fetchSemaphores();
@@ -68,7 +72,7 @@ export async function setupDevices() {
   initializeSemaphores();
   //mostrar dados do dashboard e atualizar o status dos semáforos:
   dashboard();
-  // Atualiza o status dos semáforos a cada 30 segundos (30000ms)
+  // Alterna e atualiza o status dos semáforos a cada 30 segundos (30000ms)
   toggleSemaphores(0, 0, false);
 }
 
@@ -314,6 +318,7 @@ setInterval(async () => {
   }
 }, refreshDisplay);
 
+// >>> INICIO DA EXECUCAO DA APLICACAO <<<
 // Inicializa os semáforos e seus estados iniciais (verde, amarelo, vermelho)
 setupDevices();
 
@@ -321,22 +326,25 @@ setupDevices();
 const app = express(); // Inicializa o servidor
 const port = 8000; // Porta do servidor
 // Habilita o uso de JSON no corpo da requisição
-app.use(express.json());
-// Habilita o uso de CORS na aplicação
-app.post("/webhook/:uuid", (req: Request<{ uuid: string }>, res: Response) => {
-  for (const semaphore of semaphores) {
+app.use(express.json()); // Express é um framework para Node.js que facilita a criação de aplicações web
+// Habilita o uso de CORS na aplicação (Cross-Origin Resource Sharing)
+app.post("/webhook/:uuid", // Webhook é um método de notificação HTTP
+  (req: Request<{ uuid: string }>, // Requisição HTTP com o uuid do semáforo
+    res: Response) => {  // Resposta HTTP com o status da requisição
+  for (const semaphore of semaphores) { // Percorre a lista de semáforos
     if (semaphore.uuid === req.params.uuid) { // Verifica se o uuid do semáforo é igual ao uuid da requisição
-      semaphore.colorStatus = req.body.command.value; // Altera o estado do semáforo
-      if (semaphore.colorStatus === ColorStatus.GREEN) { // Verifica se o estado do semáforo é verde
-        timeAux = new Date(); // Atualiza o tempo auxiliar
+      semaphore.colorStatus = req.body.command.value; // Entao altera o estado do semáforo para o estado da requisição
+      if (semaphore.colorStatus === ColorStatus.GREEN) { // Se o estado do semáforo é verde
+        timeAux = new Date(); // Entao atualiza o tempo auxiliar para o tempo atual
       }
       break;
     }
   }
-  res.status(200).send("Webhook recebido com sucesso!"); // Retorna a mensagem de sucesso
+  res.status(200).send("Webhook recebido com sucesso!"); // Retorna a mensagem de sucesso ao receber o webhook com sucesso
 });
 // Inicializa o servidor na porta 8000 para receber os comandos dos semáforos (verde, amarelo, vermelho)
-app.listen(port, () => { // Inicializa o servidor na porta 8000
-  console.log(`RECEBIMENTO DE COMANDOS HABILITADOS`); // Exibe a mensagem de sucesso
+app.listen(port, () => { // Inicializa o servidor na porta 8000 
+  console.log(`RECEBIMENTO DE COMANDOS HABILITADOS`); // Exibe a mensagem de sucesso ao habilitar o recebimento de comandos
 });
+
 export { Semaphore }; // Exporta a classe Semaphore

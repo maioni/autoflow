@@ -1,3 +1,6 @@
+// Este script informa as cores dos semáforos que serão criados no adaptador.
+
+// Cores disponíveis que podem ser usadas na aplicacao:
 export enum Colors {
   BLUE = "\x1b[34m",
   GREEN = "\x1b[32m",
@@ -24,6 +27,7 @@ export enum Colors {
   END = "\x1b[0m",
 }
 
+// Função que retorna a cor de acordo com o parâmetro passado
 export function getColor(
   color: "cyan" | "blue" | "green" | "purple" | "end" | "yellow" | "red" | "orange" | "pink" | "gray" | "white" | "light_blue" | "light_green" | "light_cyan" | "light_purple" | "light_red" | "light_yellow" | "light_gray" | "bold" | "underline" | "reversed" | "magenta"
 ) {

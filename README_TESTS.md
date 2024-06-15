@@ -40,7 +40,7 @@ Instalar o Supertest e types
 yarn add -D supertest @types/supertest
 
 
-pm install --save-dev ts-jest @types/jest
+npm install --save-dev ts-jest @types/jest
 npx ts-jest config:init
 "FUNCIONOU"
 
