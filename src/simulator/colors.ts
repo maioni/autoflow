@@ -1,6 +1,6 @@
 // Este script informa as cores dos semáforos que serão criados no adaptador.
 
-// Cores disponíveis que podem ser usadas na aplicacao:
+// Cores disponíveis que podem ser usadas na aplicação:
 export enum Colors {
   BLUE = "\x1b[34m",
   GREEN = "\x1b[32m",
@@ -25,56 +25,41 @@ export enum Colors {
   UNDERLINE = "\x1b[4m", // Underlined text
   REVERSED = "\x1b[7m", // Reversed text (background and foreground colors are swapped)
   END = "\x1b[0m",
+  ERROR = "ERROR: Invalid color.",
 }
 
 // Função que retorna a cor de acordo com o parâmetro passado
-export function getColor(
-  color: "cyan" | "blue" | "green" | "purple" | "end" | "yellow" | "red" | "orange" | "pink" | "gray" | "white" | "light_blue" | "light_green" | "light_cyan" | "light_purple" | "light_red" | "light_yellow" | "light_gray" | "bold" | "underline" | "reversed" | "magenta"
-) {
-  switch (color) {
-    case "cyan":
-      return Colors.CYAN;
-    case "blue":
-      return Colors.BLUE;
-    case "green":
-      return Colors.GREEN;
-    case "purple":
-      return Colors.PURPLE;
-    case "yellow":
-      return Colors.YELLOW;
-    case "red":
-      return Colors.RED;
-    case "orange":
-      return Colors.ORANGE;
-    case "pink":
-      return Colors.PINK;
-    case "magenta":
-      return Colors.MAGENTA;    
-    case "gray":
-      return Colors.GRAY;
-    case "white":
-      return Colors.WHITE;
-    case "light_blue":
-      return Colors.LIGHT_BLUE
-    case "light_green":
-      return Colors.LIGHT_GREEN
-    case "light_cyan":
-      return Colors.LIGHT_CYAN
-    case "light_purple":
-      return Colors.LIGHT_PURPLE
-    case "light_red":
-      return Colors.LIGHT_RED
-    case "light_yellow":
-      return Colors.LIGHT_YELLOW
-    case "light_gray":
-      return Colors.LIGHT_GRAY
-    case "bold":
-      return Colors.BOLD
-    case "underline":
-      return Colors.UNDERLINE
-    case "reversed":
-      return Colors.REVERSED
-    case "end":
-      return Colors.END;
+export function getColor(color: string) {
+  const colorMapping: { [key: string]: string } = {
+    cyan: Colors.CYAN,
+    blue: Colors.BLUE,
+    green: Colors.GREEN,
+    purple: Colors.PURPLE,
+    yellow: Colors.YELLOW,
+    red: Colors.RED,
+    orange: Colors.ORANGE,
+    pink: Colors.PINK,
+    magenta: Colors.MAGENTA,
+    gray: Colors.GRAY,
+    white: Colors.WHITE,
+    light_blue: Colors.LIGHT_BLUE,
+    light_green: Colors.LIGHT_GREEN,
+    light_cyan: Colors.LIGHT_CYAN,
+    light_purple: Colors.LIGHT_PURPLE,
+    light_red: Colors.LIGHT_RED,
+    light_yellow: Colors.LIGHT_YELLOW,
+    light_gray: Colors.LIGHT_GRAY,
+    bold: Colors.BOLD,
+    underline: Colors.UNDERLINE,
+    reversed: Colors.REVERSED,
+    end: Colors.END,
+  };
+
+  const colorCode = colorMapping[color.toLowerCase()];
+
+  if (!colorCode) {
+    throw new Error(`Invalid color: ${color}`);
   }
+
+  return colorCode;
 }
