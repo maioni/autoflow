@@ -1,38 +1,37 @@
 import { getColor, Colors } from '../src/simulator/colors';
 
-describe("getColor function", () => {
-  it("should return the corresponding color code for the given color", () => {
-    expect(getColor("cyan")).toBe(Colors.CYAN);
-    expect(getColor("blue")).toBe(Colors.BLUE);
-    expect(getColor("green")).toBe(Colors.GREEN);
-    expect(getColor("purple")).toBe(Colors.PURPLE);
-    expect(getColor("yellow")).toBe(Colors.YELLOW);
-    expect(getColor("red")).toBe(Colors.RED);
-    expect(getColor("orange")).toBe(Colors.ORANGE);
-    expect(getColor("pink")).toBe(Colors.PINK);
-    expect(getColor("magenta")).toBe(Colors.MAGENTA);
-    expect(getColor("gray")).toBe(Colors.GRAY);
-    expect(getColor("white")).toBe(Colors.WHITE);
-    expect(getColor("light_blue")).toBe(Colors.LIGHT_BLUE);
-    expect(getColor("light_green")).toBe(Colors.LIGHT_GREEN);
-    expect(getColor("light_cyan")).toBe(Colors.LIGHT_CYAN);
-    expect(getColor("light_purple")).toBe(Colors.LIGHT_PURPLE);
-    expect(getColor("light_red")).toBe(Colors.LIGHT_RED);
-    expect(getColor("light_yellow")).toBe(Colors.LIGHT_YELLOW);
-    expect(getColor("light_gray")).toBe(Colors.LIGHT_GRAY);
-    expect(getColor("bold")).toBe(Colors.BOLD);
-    expect(getColor("underline")).toBe(Colors.UNDERLINE);
-    expect(getColor("reversed")).toBe(Colors.REVERSED);
-    expect(getColor("end")).toBe(Colors.END);
+describe("Colors", () => {
+  
+  const colorCases = [
+    { input: "cyan", expected: Colors.CYAN },
+    { input: "blue", expected: Colors.BLUE },
+    { input: "green", expected: Colors.GREEN },
+    { input: "purple", expected: Colors.PURPLE },
+    { input: "yellow", expected: Colors.YELLOW },
+    { input: "red", expected: Colors.RED },
+    { input: "orange", expected: Colors.ORANGE },
+    { input: "pink", expected: Colors.PINK },
+    { input: "magenta", expected: Colors.MAGENTA },
+    { input: "gray", expected: Colors.GRAY },
+    { input: "white", expected: Colors.WHITE },
+    { input: "light_blue", expected: Colors.LIGHT_BLUE },
+    { input: "light_green", expected: Colors.LIGHT_GREEN },
+    { input: "light_cyan", expected: Colors.LIGHT_CYAN },
+    { input: "light_purple", expected: Colors.LIGHT_PURPLE },
+    { input: "light_red", expected: Colors.LIGHT_RED },
+    { input: "light_yellow", expected: Colors.LIGHT_YELLOW },
+    { input: "light_gray", expected: Colors.LIGHT_GRAY },
+    { input: "bold", expected: Colors.BOLD },
+    { input: "underline", expected: Colors.UNDERLINE },
+    { input: "reversed", expected: Colors.REVERSED },
+    { input: "end", expected: Colors.END },
+  ];
+
+  it.each(colorCases)("should return the corresponding color code for the given color - '%s'", ({ input, expected }) => {
+    expect(getColor(input)).toEqual(expected);
   });
-});
 
-it("should return 'undefined' for an invalid color", () => {
-  expect(getColor("")).toBe("");
-  expect(getColor("123")).toBe("");
-  expect(getColor("invalid_color")).toBe("");
-});
-
-it("should throw an error for an invalid color", () => {
-  expect(() => getColor("invalid_color")).toThrowError("Invalid color: invalid_color");
+  it("should throw an error for an invalid color", () => {
+    expect(() => getColor("invalid")).toThrow(`Invalid color: invalid`);
+  });
 });
