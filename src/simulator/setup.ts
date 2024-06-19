@@ -80,7 +80,7 @@ const semaphores = [
 ];
 
 // Função principal, que cria as capacidades e os recursos no adaptador
-async function main() {
+export async function main() {
   const cap1 = await fetch("http://10.10.10.104:8000/catalog/capabilities", { // Requisição para criar a capacidade de semáforo
     method: "POST", // Método POST
     headers: { // Headers da requisição

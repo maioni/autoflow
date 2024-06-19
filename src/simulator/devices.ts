@@ -24,7 +24,7 @@ const carTime = 1000 * 5; // 5s
 // Verificar estado de emergência se o total de carros em um semáforo atingir o limite
 const carCountEmergencyTrigger = 30; // 20 carros
 const carCountNoEmergencyTrigger = 20; // 10 carros
-// Tempo de saida de carros em cada cor do semáforo
+// Tempo de saída de carros em cada cor do semáforo
 const carCountReductionGreenTime = 30; // 10 carros
 const carCountReductionYellowTime = 10; // 2 carros
 const normalRedTime = 1000 * 5; // 5s
@@ -32,7 +32,7 @@ const normalYellowTime = 1000 * 10; // 10s
 const normalGreenTime = 1000 * 15; // 15s
 // Tempo total de ciclo do semáforo
 //let totalCycleTime = normalRedTime + normalYellowTime + normalGreenTime;
-// Tempo de diferenca de emergencia entre as cores do semáforo
+// Tempo de diferença de emergência entre as cores do semáforo
 const diffEmergencyTime = 1000 * 5; // 5s
 const emergencyRedTime = normalRedTime; // 5s
 const emergencyYellowTime = normalYellowTime - diffEmergencyTime; // 5s
@@ -318,3 +318,4 @@ app.listen(port, () => { // Inicializa o servidor na porta 8000
 });
 
 export { Semaphore }; // Exporta a classe Semaphore
+export default app; // Exportando app para uso nos testes
