@@ -52,3 +52,16 @@ npm install --save-dev @babel/preset-typescript @babel/preset-env babel-jest @ty
 ## CONFIG FILES
 
 jest.config.js // 
+
+
+
+npm i -D typescript jest ts-jest @types/jest ts-node
+
+
+
+yarn upgrade-interactive --latest
+yarn upgrade --latest
+yarn upgrade --latest
+
+
+yarn install --legacy-peer-deps
