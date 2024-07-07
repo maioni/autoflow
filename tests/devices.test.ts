@@ -48,7 +48,7 @@ let server: any;
 describe("Devices", () => {
   beforeAll((done) => {
   const app = express();
-  const port = 8000;
+  const port = 8002;
 
   app.use(express.json());
 
