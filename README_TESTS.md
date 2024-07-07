@@ -65,3 +65,9 @@ yarn upgrade --latest
 
 
 yarn install --legacy-peer-deps
+
+
+
+lsof -i :8000
+
+kill PID
