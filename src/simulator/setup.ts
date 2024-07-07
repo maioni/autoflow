@@ -122,7 +122,12 @@ export async function main() {
       body: JSON.stringify({ data: sendData }), // Corpo da requisição com os dados do recurso
     });
     console.log(response.status); // Status da requisição de criação do recurso
+
     const data = ((await response.json()) as any).data; // Dados do recurso criado (uuid, capabilities)
+    if (response.status === 500) {
+      return;
+    }
+
 
     const subscription = await fetch( // Requisição para criar a subscrição do recurso
       "http://10.10.10.104:8000/adaptor/subscriptions", // URL da requisição
@@ -141,6 +146,9 @@ export async function main() {
       }
     );
     console.log(subscription.status); // Status da requisição de criação da subscrição
+    if (subscription.status === 500) {
+      return;
+    }
   }
 }
 

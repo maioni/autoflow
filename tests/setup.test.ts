@@ -84,7 +84,7 @@ describe("create capabilities and resources", () => {
 
     await main();
 
-    expect(fetch).toHaveBeenCalledTimes(8);
+    expect(fetch).toHaveBeenCalledTimes(10);
     expect(fetch).toHaveBeenNthCalledWith(
       1,
       "http://10.10.10.104:8000/catalog/capabilities",
@@ -102,7 +102,7 @@ describe("create capabilities and resources", () => {
     );
     expect(fetch).toHaveBeenNthCalledWith(
       4,
-      "http://10.10.10.104:8000/adaptor/resources",
+      "http://10.10.10.104:8000/adaptor/subscriptions",
       expect.any(Object)
     );
     expect(fetch).toHaveBeenNthCalledWith(
@@ -112,12 +112,12 @@ describe("create capabilities and resources", () => {
     );
     expect(fetch).toHaveBeenNthCalledWith(
       6,
-      "http://10.10.10.104:8000/adaptor/resources",
+      "http://10.10.10.104:8000/adaptor/subscriptions",
       expect.any(Object)
     );
     expect(fetch).toHaveBeenNthCalledWith(
       7,
-      "http://10.10.10.104:8000/adaptor/subscriptions",
+      "http://10.10.10.104:8000/adaptor/resources",
       expect.any(Object)
     );
     expect(fetch).toHaveBeenNthCalledWith(
