@@ -51,14 +51,14 @@ describe("Devices", () => {
     });
 
     server = app.listen(port, () => {
-      console.log('Servidor iniciado na porta 8000 para testes');
+      console.log('Servidor iniciado na porta 8001 para testes');
       done();
     });
   }, testTimeout);
 
   afterAll((done) => {
     server.close(() => {
-      console.log('Servidor fechado na porta 8000 após testes');
+      console.log('Servidor fechado na porta 8001 após testes');
       done();
     });
   }, testTimeout);
