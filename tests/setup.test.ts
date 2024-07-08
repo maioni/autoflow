@@ -1,152 +1,200 @@
+import {
+  setupDevices,
+  fetchSemaphores,
+  showSemaphores,
+  initializeSemaphores,
+  dashboard,
+  toggleSemaphores,
+  checkEmergencyStatus,
+  handleGreen,
+  handleYellow,
+  setSemaphoreEmergency
+} from '../src/simulator/devices';
 import { main } from "../src/simulator/setup";
-import * as http from "http";
-import app from "../src/simulator/devices"; // Certifique-se de exportar o `app` do arquivo devices.ts
+import { Semaphore, ColorStatus } from '../src/classes/semaphore';
+import express from "express";
 
-let server: http.Server;
+const testTimeout = 120000;
 
-const testTimeout = 1000;
+jest.mock('../src/simulator/devices'); // Mocking the whole module
 
-describe("Setup Simulator", () => {
+const carCountEmergencyTrigger = 30;
+const carCountNoEmergencyTrigger = 20;
+let timeAux = new Date();
+const semaphoreStates = [
+  { color: ColorStatus.GREEN, duration: 15000, emergency: 20000, rush: false },
+  { color: ColorStatus.YELLOW, duration: 10000, emergency: 5000, rush: false },
+  { color: ColorStatus.RED, duration: 5000, emergency: 5000, rush: false }
+];
+const semaphores: Semaphore[] = [];
+let server: any;
 
-  beforeAll(async () => {
-    await new Promise((resolve) => {
-      server = app.listen(8001, () => {
-        console.log("Servidor iniciado na porta 8000 para testes");
-        resolve(null);
-      });
+describe("Devices", () => {
+
+  beforeAll((done) => {
+    const app = express();
+    const port = 8001;
+
+    app.use(express.json());
+
+    app.post("/webhook/:uuid", (req, res) => {
+      for (const semaphore of semaphores) {
+        if (semaphore.uuid === req.params.uuid) {
+          semaphore.colorStatus = req.body.command.value;
+          if (semaphore.colorStatus === ColorStatus.GREEN) {
+            timeAux = new Date();
+          }
+          break;
+        }
+      }
+      res.status(200).send("Webhook recebido com sucesso!");
     });
-  }, testTimeout); // Aumenta o timeout para 10 segundos se necessário
-  
-  afterAll(async () => {
-    await new Promise((resolve) => {
-      server.close(() => {
-        console.log("Servidor fechado após testes");
-        resolve(null);
-      });
+
+    server = app.listen(port, () => {
+      console.log('Servidor iniciado na porta 8000 para testes');
+      done();
     });
-  }, testTimeout); // Aumenta o timeout para 10 segundos se necessário
+  }, testTimeout);
 
-  it("should create capabilities and resources successfully", async () => {
-    const fetchMock = jest
-      .fn()
-      .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
-      .mockResolvedValue({
-        status: 201,
-        json: () =>
-          Promise.resolve({
-            data: {
-              uuid: "123",
-              capabilities: ["semaphore", "semaphore-camera"],
-            },
-          }),
-      });
+  afterAll((done) => {
+    server.close(() => {
+      console.log('Servidor fechado na porta 8000 após testes');
+      done();
+    });
+  }, testTimeout);
 
-    global.fetch = fetchMock as any;
+  describe("create capabilities and resources", () => {
+    it("should create capabilities successfully", async () => {
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
+        .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
+        .mockResolvedValue({
+          status: 201,
+          json: () =>
+            Promise.resolve({
+              data: {
+                uuid: "123",
+                capabilities: ["semaphore", "semaphore-camera"],
+              },
+            }),
+        });
 
-    await main();
+      global.fetch = fetchMock as any;
 
-    expect(fetch).toHaveBeenCalledTimes(8);
-    expect(fetch).toHaveBeenNthCalledWith(
-      1,
-      "http://10.10.10.104:8000/catalog/capabilities",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      2,
-      "http://10.10.10.104:8000/catalog/capabilities",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      3,
-      "http://10.10.10.104:8000/adaptor/resources",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      4,
-      "http://10.10.10.104:8000/adaptor/resources",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      5,
-      "http://10.10.10.104:8000/adaptor/resources",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      6,
-      "http://10.10.10.104:8000/adaptor/resources",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      7,
-      "http://10.10.10.104:8000/adaptor/subscriptions",
-      expect.any(Object)
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      8,
-      "http://10.10.10.104:8000/adaptor/subscriptions",
-      expect.any(Object)
-    );
-  });
+      await main();
 
-  it("should handle error in creating capabilities", async () => {
-    const fetchMock = jest
-      .fn()
-      .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
+      expect(fetch).toHaveBeenCalledTimes(10);
+      expect(fetch).toHaveBeenNthCalledWith(
+        1,
+        "http://10.10.10.104:8000/catalog/capabilities",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        2,
+        "http://10.10.10.104:8000/catalog/capabilities",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        3,
+        "http://10.10.10.104:8000/adaptor/resources",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        4,
+        "http://10.10.10.104:8000/adaptor/subscriptions",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        5,
+        "http://10.10.10.104:8000/adaptor/resources",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        6,
+        "http://10.10.10.104:8000/adaptor/subscriptions",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        7,
+        "http://10.10.10.104:8000/adaptor/resources",
+        expect.any(Object)
+      );
+      expect(fetch).toHaveBeenNthCalledWith(
+        8,
+        "http://10.10.10.104:8000/adaptor/subscriptions",
+        expect.any(Object)
+      );
+    }, testTimeout);
 
-    global.fetch = fetchMock as any;
+    it("should handle error in creating capabilities", async () => {
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) })
+        .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
 
-    await main();
+      global.fetch = fetchMock as any;
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
-    expect(fetch).toHaveBeenCalledTimes(2);
-    expect(console.log).toHaveBeenCalledWith(500);
-    expect(console.log).toHaveBeenCalledWith(500);
-    expect(console.log).toHaveBeenCalledWith("Error creating capabilities");
-  });
+      await main();
 
-  it("should handle error in creating resources", async () => {
-    const fetchMock = jest
-      .fn()
-      .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
+      expect(fetch).toHaveBeenCalledTimes(2);
+      expect(consoleSpy).toHaveBeenCalledWith(500);
+      expect(consoleSpy).toHaveBeenCalledWith(500);
+      expect(consoleSpy).toHaveBeenCalledWith("Error creating capabilities");
 
-    global.fetch = fetchMock as any;
+      consoleSpy.mockRestore();
+    });
 
-    await main();
+    it("should handle error in creating resources", async () => {
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
+        .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
+        .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
 
-    expect(fetch).toHaveBeenCalledTimes(3);
-    expect(console.log).toHaveBeenCalledWith(201);
-    expect(console.log).toHaveBeenCalledWith(201);
-    expect(console.log).toHaveBeenCalledWith(500);
-  });
+      global.fetch = fetchMock as any;
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
-  it("should handle error in creating subscriptions", async () => {
-    const fetchMock = jest
-      .fn()
-      .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({
-        status: 201,
-        json: () =>
-          Promise.resolve({
-            data: {
-              uuid: "123",
-              capabilities: ["semaphore", "semaphore-camera"],
-            },
-          }),
-      })
-      .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
+      await main();
 
-    global.fetch = fetchMock as any;
+      expect(fetch).toHaveBeenCalledTimes(3);
+      expect(consoleSpy).toHaveBeenCalledWith(201);
+      expect(consoleSpy).toHaveBeenCalledWith(201);
+      expect(consoleSpy).toHaveBeenCalledWith(500);
 
-    await main();
+      consoleSpy.mockRestore();
+    });
 
-    expect(fetch).toHaveBeenCalledTimes(4);
-    expect(console.log).toHaveBeenCalledWith(201);
-    expect(console.log).toHaveBeenCalledWith(201);
-    expect(console.log).toHaveBeenCalledWith(201);
-    expect(console.log).toHaveBeenCalledWith(500);
+    it("should handle error in creating subscriptions", async () => {
+      const fetchMock = jest
+        .fn()
+        .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
+        .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
+        .mockResolvedValueOnce({
+          status: 201,
+          json: () =>
+            Promise.resolve({
+              data: {
+                uuid: "123",
+                capabilities: ["semaphore", "semaphore-camera"],
+              },
+            }),
+        })
+        .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
+
+      global.fetch = fetchMock as any;
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+      await main();
+
+      expect(fetch).toHaveBeenCalledTimes(4);
+      expect(consoleSpy).toHaveBeenCalledWith(201);
+      expect(consoleSpy).toHaveBeenCalledWith(201);
+      expect(consoleSpy).toHaveBeenCalledWith(201);
+      expect(consoleSpy).toHaveBeenCalledWith(500);
+
+      consoleSpy.mockRestore();
+    });
   });
 });
