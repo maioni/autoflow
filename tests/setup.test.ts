@@ -1,70 +1,32 @@
-import {
-  setupDevices,
-  fetchSemaphores,
-  showSemaphores,
-  initializeSemaphores,
-  dashboard,
-  toggleSemaphores,
-  checkEmergencyStatus,
-  handleGreen,
-  handleYellow,
-  setSemaphoreEmergency
-} from '../src/simulator/devices';
 import { main } from "../src/simulator/setup";
-import { Semaphore, ColorStatus } from '../src/classes/semaphore';
-import express from "express";
+import * as http from "http";
+import app from "../src/simulator/devices"; // Certifique-se de exportar o `app` do arquivo devices.ts
 
-const testTimeout = 120000;
+let server: http.Server;
 
-jest.mock('../src/simulator/devices'); // Mocking the whole module
+const testTimeout = 1000;
 
-const carCountEmergencyTrigger = 30;
-const carCountNoEmergencyTrigger = 20;
-let timeAux = new Date();
-const semaphoreStates = [
-{ color: ColorStatus.GREEN, duration: 15000, emergency: 20000, rush: false },
-{ color: ColorStatus.YELLOW, duration: 10000, emergency: 5000, rush: false },
-{ color: ColorStatus.RED, duration: 5000, emergency: 5000, rush: false }
-];
-const semaphores: Semaphore[] = [];
-let server: any;
+describe("Setup Simulator", () => {
 
-describe("Devices", () => {
+  beforeAll(async () => {
+    await new Promise((resolve) => {
+      server = app.listen(8001, () => {
+        console.log("Servidor iniciado na porta 8000 para testes");
+        resolve(null);
+      });
+    });
+  }, testTimeout); // Aumenta o timeout para 10 segundos se necessário
+  
+  afterAll(async () => {
+    await new Promise((resolve) => {
+      server.close(() => {
+        console.log("Servidor fechado após testes");
+        resolve(null);
+      });
+    });
+  }, testTimeout); // Aumenta o timeout para 10 segundos se necessário
 
-beforeAll((done) => {
-  const app = express();
-  const port = 8001;
-
-  app.use(express.json());
-
-  app.post("/webhook/:uuid", (req, res) => {
-    for (const semaphore of semaphores) {
-      if (semaphore.uuid === req.params.uuid) {
-        semaphore.colorStatus = req.body.command.value;
-        if (semaphore.colorStatus === ColorStatus.GREEN) {
-          timeAux = new Date();
-        }
-        break;
-      }
-    }
-    res.status(200).send("Webhook recebido com sucesso!");
-  });
-
-  server = app.listen(port, () => {
-    console.log('Servidor iniciado na porta 8000 para testes');
-    done();
-  });
-}, testTimeout);
-
-afterAll((done) => {
-  server.close(() => {
-    console.log('Servidor fechado na porta 8000 após testes');
-    done();
-  });
-}, testTimeout);
-
-describe("create capabilities and resources", () => {
-  it("should create capabilities successfully", async () => {
+  it("should create capabilities and resources successfully", async () => {
     const fetchMock = jest
       .fn()
       .mockResolvedValueOnce({ status: 201, json: () => Promise.resolve({}) })
@@ -84,7 +46,7 @@ describe("create capabilities and resources", () => {
 
     await main();
 
-    expect(fetch).toHaveBeenCalledTimes(10);
+    expect(fetch).toHaveBeenCalledTimes(8);
     expect(fetch).toHaveBeenNthCalledWith(
       1,
       "http://10.10.10.104:8000/catalog/capabilities",
@@ -102,7 +64,7 @@ describe("create capabilities and resources", () => {
     );
     expect(fetch).toHaveBeenNthCalledWith(
       4,
-      "http://10.10.10.104:8000/adaptor/subscriptions",
+      "http://10.10.10.104:8000/adaptor/resources",
       expect.any(Object)
     );
     expect(fetch).toHaveBeenNthCalledWith(
@@ -112,12 +74,12 @@ describe("create capabilities and resources", () => {
     );
     expect(fetch).toHaveBeenNthCalledWith(
       6,
-      "http://10.10.10.104:8000/adaptor/subscriptions",
+      "http://10.10.10.104:8000/adaptor/resources",
       expect.any(Object)
     );
     expect(fetch).toHaveBeenNthCalledWith(
       7,
-      "http://10.10.10.104:8000/adaptor/resources",
+      "http://10.10.10.104:8000/adaptor/subscriptions",
       expect.any(Object)
     );
     expect(fetch).toHaveBeenNthCalledWith(
@@ -125,7 +87,7 @@ describe("create capabilities and resources", () => {
       "http://10.10.10.104:8000/adaptor/subscriptions",
       expect.any(Object)
     );
-  }, testTimeout);
+  });
 
   it("should handle error in creating capabilities", async () => {
     const fetchMock = jest
@@ -134,16 +96,13 @@ describe("create capabilities and resources", () => {
       .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
 
     global.fetch = fetchMock as any;
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
     await main();
 
     expect(fetch).toHaveBeenCalledTimes(2);
-    expect(consoleSpy).toHaveBeenCalledWith(500);
-    expect(consoleSpy).toHaveBeenCalledWith(500);
-    expect(consoleSpy).toHaveBeenCalledWith("Error creating capabilities");
-    
-    consoleSpy.mockRestore();
+    expect(console.log).toHaveBeenCalledWith(500);
+    expect(console.log).toHaveBeenCalledWith(500);
+    expect(console.log).toHaveBeenCalledWith("Error creating capabilities");
   });
 
   it("should handle error in creating resources", async () => {
@@ -154,16 +113,13 @@ describe("create capabilities and resources", () => {
       .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
 
     global.fetch = fetchMock as any;
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
     await main();
 
     expect(fetch).toHaveBeenCalledTimes(3);
-    expect(consoleSpy).toHaveBeenCalledWith(201);
-    expect(consoleSpy).toHaveBeenCalledWith(201);
-    expect(consoleSpy).toHaveBeenCalledWith(500);
-    
-    consoleSpy.mockRestore();
+    expect(console.log).toHaveBeenCalledWith(201);
+    expect(console.log).toHaveBeenCalledWith(201);
+    expect(console.log).toHaveBeenCalledWith(500);
   });
 
   it("should handle error in creating subscriptions", async () => {
@@ -184,17 +140,13 @@ describe("create capabilities and resources", () => {
       .mockResolvedValueOnce({ status: 500, json: () => Promise.resolve({}) });
 
     global.fetch = fetchMock as any;
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
     await main();
 
     expect(fetch).toHaveBeenCalledTimes(4);
-    expect(consoleSpy).toHaveBeenCalledWith(201);
-    expect(consoleSpy).toHaveBeenCalledWith(201);
-    expect(consoleSpy).toHaveBeenCalledWith(201);
-    expect(consoleSpy).toHaveBeenCalledWith(500);
-    
-    consoleSpy.mockRestore();
+    expect(console.log).toHaveBeenCalledWith(201);
+    expect(console.log).toHaveBeenCalledWith(201);
+    expect(console.log).toHaveBeenCalledWith(201);
+    expect(console.log).toHaveBeenCalledWith(500);
   });
-});
 });

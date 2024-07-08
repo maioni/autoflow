@@ -82,20 +82,34 @@ describe("Devices", () => {
 
   describe("setupDevices", () => {
     it("should call the necessary functions", async () => {
-      // Mock das funções
-      (fetchSemaphores as jest.Mock).mockResolvedValue(undefined);
-      (showSemaphores as jest.Mock).mockResolvedValue(undefined);
-      (initializeSemaphores as jest.Mock).mockResolvedValue(undefined);
-      (dashboard as jest.Mock).mockResolvedValue(undefined);
-      (toggleSemaphores as jest.Mock).mockResolvedValue(undefined);
+      const fetchSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "fetchSemaphores"
+      );
+      const showSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "showSemaphores"
+      );
+      const initializeSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "initializeSemaphores"
+      );
+      const dashboardSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "dashboard"
+      );
+      const toggleSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "toggleSemaphores"
+      );
 
       await setupDevices();
 
-      expect(fetchSemaphores).toHaveBeenCalled();
-      expect(showSemaphores).toHaveBeenCalled();
-      expect(initializeSemaphores).toHaveBeenCalled();
-      expect(dashboard).toHaveBeenCalled();
-      expect(toggleSemaphores).toHaveBeenCalled();
+      expect(fetchSemaphoresSpy).toHaveBeenCalled();
+      expect(showSemaphoresSpy).toHaveBeenCalled();
+      expect(initializeSemaphoresSpy).toHaveBeenCalled();
+      expect(dashboardSpy).toHaveBeenCalled();
+      expect(toggleSemaphoresSpy).toHaveBeenCalled();
     });
   });
 

@@ -7,7 +7,7 @@
     "lint": "eslint . --ext .ts",
     "start:dev": "nodemon --exec ts-node src/simulator/devices.ts",
     "setup:simulator": "npx ts-node src/simulator/setup.ts",
-    "test": "npx jest --runInBand --detectOpenHandles"
+    "test": "jest --maxWorkers=1 --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
