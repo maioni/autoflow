@@ -24,18 +24,8 @@ let timeAux = new Date();
 
 // Definindo o array semaphoreStates para uso nos testes
 const semaphoreStates = [
-  {
-    color: ColorStatus.GREEN,
-    duration: 15000,
-    emergency: 20000,
-    rush: false,
-  },
-  {
-    color: ColorStatus.YELLOW,
-    duration: 10000,
-    emergency: 5000,
-    rush: false,
-  },
+  { color: ColorStatus.GREEN, duration: 15000, emergency: 20000, rush: false },
+  { color: ColorStatus.YELLOW, duration: 10000, emergency: 5000, rush: false },
   { color: ColorStatus.RED, duration: 5000, emergency: 5000, rush: false },
 ];
 
@@ -52,7 +42,7 @@ describe("Devices", () => {
 
     app.use(express.json());
 
-    app.post("/webhook/:uuid", (req: Request, res: Response) => {
+    app.post("/webhook/:uuid", (req, res) => {
       for (const semaphore of semaphores) {
         if (semaphore.uuid === req.params.uuid) {
           semaphore.colorStatus = req.body.command.value;
@@ -82,20 +72,34 @@ describe("Devices", () => {
 
   describe("setupDevices", () => {
     it("should call the necessary functions", async () => {
-      // Mock das funções
-      (fetchSemaphores as jest.Mock).mockResolvedValue(undefined);
-      (showSemaphores as jest.Mock).mockResolvedValue(undefined);
-      (initializeSemaphores as jest.Mock).mockResolvedValue(undefined);
-      (dashboard as jest.Mock).mockResolvedValue(undefined);
-      (toggleSemaphores as jest.Mock).mockResolvedValue(undefined);
+      const fetchSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "fetchSemaphores"
+      );
+      const showSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "showSemaphores"
+      );
+      const initializeSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "initializeSemaphores"
+      );
+      const dashboardSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "dashboard"
+      );
+      const toggleSemaphoresSpy = jest.spyOn(
+        require("../src/simulator/devices"),
+        "toggleSemaphores"
+      );
 
       await setupDevices();
 
-      expect(fetchSemaphores).toHaveBeenCalled();
-      expect(showSemaphores).toHaveBeenCalled();
-      expect(initializeSemaphores).toHaveBeenCalled();
-      expect(dashboard).toHaveBeenCalled();
-      expect(toggleSemaphores).toHaveBeenCalled();
+      expect(fetchSemaphoresSpy).toHaveBeenCalled();
+      expect(showSemaphoresSpy).toHaveBeenCalled();
+      expect(initializeSemaphoresSpy).toHaveBeenCalled();
+      expect(dashboardSpy).toHaveBeenCalled();
+      expect(toggleSemaphoresSpy).toHaveBeenCalled();
     });
   });
 
@@ -418,7 +422,7 @@ describe("Devices", () => {
       const semaphore: Semaphore = {
         uuid: "semaphore1",
         carCount: 10,
-        colorStatus: ColorStatus.GREEN,
+        colorStatus: ColorStatus.RED,
         location: { lat: 0, lon: 0 },
         emergency: false,
         description: "",
